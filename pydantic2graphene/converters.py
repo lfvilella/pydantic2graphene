@@ -1,0 +1,167 @@
+__all__ = [
+    "ToGrapheneOptions",
+    "to_graphene",
+    "ConverterToGrapheneBase",
+]
+
+import typing
+import graphene
+import pydantic
+import inspect
+
+from . import errors
+from . import types
+
+
+def _get_field_by_type(pydantic_field: pydantic.fields.ModelField):
+    field = types.TYPE_MAPPING.get(pydantic_field.type_)
+    if field:
+        return field
+
+    if issubclass(pydantic_field.type_, pydantic.BaseModel):
+        return to_graphene(pydantic_field.type_)
+
+
+def _get_graphene_field(pydantic_field: pydantic.fields.ModelField):
+
+    if pydantic_field.shape in types.NOT_SUPPORTED_SHAPES:
+        raise errors.FieldNotSupported(pydantic_field.name)
+
+    args = {
+        "required": pydantic_field.required,
+        "default_value": pydantic_field.default,
+    }
+    field = _get_field_by_type(pydantic_field)
+    if not field:
+        raise errors.FieldNotSupported(pydantic_field.name)
+
+    if pydantic_field.shape in types.LIST_SHAPES:
+        if pydantic_field.required:
+            return graphene.List(graphene.NonNull(field), **args)
+        return graphene.List(field, **args)
+
+    return graphene.Field(field, **args)
+
+
+def _get_pydantic_class_name(pydantic_model: pydantic.BaseModel) -> str:
+    """
+    >>> str(Human)
+    "<class 'api.Human'>"
+    """
+    return str(pydantic_model).split("'")[1].split(".")[-1]
+
+
+def _get_pydantic_fields(
+    pydantic_model: pydantic.BaseModel,
+) -> typing.List[pydantic.fields.ModelField]:
+    """
+    >>> str(Human)
+    "<class 'api.Human'>"
+    """
+    return pydantic_model.__fields__.values()
+
+
+def _generate_class_name(
+    pydantic_model: pydantic.BaseModel,
+    graphene_type: types.graphene_type = graphene.ObjectType,
+):
+    _name = _get_pydantic_class_name(pydantic_model)
+
+    if issubclass(graphene_type, graphene.InputObjectType):
+        return f"{_name}InputGql"
+
+    if issubclass(graphene_type, graphene.Interface):
+        return f"{_name}InterfaceGql"
+
+    return f"{_name}Gql"
+
+
+class ToGrapheneOptions(pydantic.BaseModel):
+    id_field_name: str = None
+
+    extra_fields: typing.Mapping[
+        str, typing.TypeVar("graphene.BaseType"),
+    ] = pydantic.Field(default_factory=dict)
+
+    exclude_fields: typing.Set[str] = pydantic.Field(default_factory=set)
+
+    class_name: str = None
+
+    @pydantic.validator("extra_fields")
+    def validate_extra_fields(cls, value):
+        if not value:
+            return value
+
+        for k, v in value.items():
+            if "graphene.types" not in repr(v):
+                raise errors.InvalidType(
+                    f'Invalid field "{k}", is not a graphene filed'
+                )
+
+        return value
+
+
+def to_graphene(
+    pydantic_model: pydantic.BaseModel,
+    graphene_type: types.graphene_type = graphene.ObjectType,
+    options: typing.Union[ToGrapheneOptions, dict] = None,
+) -> types.graphene_type:
+
+    options = options or {}
+    if not isinstance(options, ToGrapheneOptions):
+        options = ToGrapheneOptions(**options)
+
+    graphene_attrs = {}
+    for field in _get_pydantic_fields(pydantic_model):
+        if field.name in options.extra_fields:
+            continue
+
+        if field.name in options.exclude_fields:
+            continue
+
+        graphene_attrs[field.name] = _get_graphene_field(field)
+
+    graphene_attrs.update(options.extra_fields)
+
+    if options.id_field_name:
+        graphene_attrs[options.id_field_name] = graphene.ID(required=True)
+
+    class_name = options.class_name or _generate_class_name(
+        pydantic_model, graphene_type
+    )
+
+    graphene_class = type(class_name, (graphene_type,), graphene_attrs)
+    return graphene_class
+
+
+class ConverterToGrapheneBase:
+    @classmethod
+    def as_class(
+        cls, graphene_type: types.graphene_type = None
+    ) -> types.graphene_type:
+        Config = getattr(cls, "Config", None)
+        if not inspect.isclass(Config):
+            raise errors.InvalidConfigClass("Config is invalid")
+
+        model = getattr(Config, "model", None)
+        if not model:
+            raise errors.InvalidConfigClass(
+                'Config is missing "model" property'
+            )
+
+        options = {k: v for k, v in vars(Config).items()}
+        options["extra_fields"] = {
+            attr: value
+            for attr, value in vars(cls).items()
+            if "graphene.types" in repr(value)
+        }
+
+        params = {
+            "pydantic_model": model,
+            "options": options,
+        }
+        graphene_type = graphene_type or getattr(Config, "graphene_type", None)
+        if graphene_type:
+            params["graphene_type"] = graphene_type
+
+        return to_graphene(**params)
