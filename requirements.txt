@@ -1,0 +1,2 @@
+graphene==2.1.8
+pydantic==1.5.1
