@@ -27,6 +27,7 @@ TYPE_MAPPING = {
     datetime.date: graphene.types.datetime.Date,
     datetime.datetime: graphene.types.datetime.DateTime,
     datetime.time: graphene.types.datetime.Time,
+    typing.Pattern: graphene.String,
 }
 
 LIST_FIELDS_NOT_TYPED = {

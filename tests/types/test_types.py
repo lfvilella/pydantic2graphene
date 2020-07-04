@@ -215,3 +215,14 @@ class TestTypeMappingPydantic2Graphene:
             pydantic2graphene.to_graphene(
                 to_pydantic_class(typing.Callable[[int], str])
             )
+
+    def test_typing_pattern_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(typing.Pattern)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
