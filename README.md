@@ -61,7 +61,8 @@ type UserGql {
     'data': {
         'emailOnly': [
             {'email': 'my-email@localhost.com'},
-            {'email': 'email@localhost.com'}], 
+            {'email': 'email@localhost.com'}
+        ],
         'all': [
             {'isActive': True, 'email': 'my-email@localhost.com'}, 
             {'isActive': False, 'email': 'email@localhost.com'}
