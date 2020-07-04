@@ -14,12 +14,14 @@ from . import types
 
 
 def _get_field_by_type(pydantic_field: pydantic.fields.ModelField):
-    field = types.TYPE_MAPPING.get(pydantic_field.type_)
+    type_ = pydantic_field.type_
+
+    field = types.TYPE_MAPPING.get(type_)
     if field:
         return field
 
-    if issubclass(pydantic_field.type_, pydantic.BaseModel):
-        return to_graphene(pydantic_field.type_)
+    if inspect.isclass(type_) and issubclass(type_, pydantic.BaseModel):
+        return to_graphene(type_)
 
 
 def _get_graphene_field(pydantic_field: pydantic.fields.ModelField):

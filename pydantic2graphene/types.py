@@ -23,14 +23,13 @@ TYPE_MAPPING = {
     int: graphene.Int,
     bytes: graphene.String,
     list: graphene.List(graphene.String),
-    # tuple: None,
-    # dict: None,
-    # set: None,
-    # frozenset: None,
+    tuple: graphene.List(graphene.String),
+    dict: graphene.List(graphene.String),
+    set: graphene.List(graphene.String),
+    frozenset: graphene.List(graphene.String),
     datetime.date: graphene.types.datetime.Date,
     datetime.datetime: graphene.types.datetime.DateTime,
     datetime.time: graphene.types.datetime.Time,
-    # datetime.timedelta: None,
 }
 
 graphene_type = typing.Union[

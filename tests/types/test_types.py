@@ -1,3 +1,5 @@
+import pytest
+import typing
 import datetime
 import pydantic
 import pydantic2graphene
@@ -65,6 +67,42 @@ class TestTypeMappingPydantic2Graphene:
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
+    def test_tuple_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(to_pydantic_class(tuple))
+        expected_value = """
+            type FakeGql {
+                field: [String]!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_dict_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(to_pydantic_class(dict))
+        expected_value = """
+            type FakeGql {
+                field: [String]!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_set_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(to_pydantic_class(set))
+        expected_value = """
+            type FakeGql {
+                field: [String]!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_frozenset_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(to_pydantic_class(frozenset))
+        expected_value = """
+            type FakeGql {
+                field: [String]!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
     def test_datetime_date_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(to_pydantic_class(datetime.date))
         expected_value = """
@@ -91,5 +129,28 @@ class TestTypeMappingPydantic2Graphene:
             type FakeGql {
                 field: Time!
             }scalarTime
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_datetime_timedelta_field(self):
+        with pytest.raises(pydantic2graphene.errors.FieldNotSupported):
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(datetime.timedelta)
+            )
+
+    def test_any_field(self):
+        with pytest.raises(pydantic2graphene.errors.FieldNotSupported):
+            pydantic2graphene.to_graphene(to_pydantic_class(typing.Any))
+
+    def test_type_var_field(self):
+        with pytest.raises(pydantic2graphene.errors.FieldNotSupported):
+            pydantic2graphene.to_graphene(to_pydantic_class(typing.TypeVar('custom_types')))
+
+    def test_optional_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(to_pydantic_class(typing.Optional[int]))
+        expected_value = """
+            type FakeGql {
+                field: Int
+            }
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
