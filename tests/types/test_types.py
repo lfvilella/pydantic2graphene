@@ -1,6 +1,4 @@
-import pytest
 import pydantic
-import graphene
 import pydantic2graphene
 
 
@@ -37,7 +35,7 @@ class TestTypeMappingPydantic2Graphene:
             }
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
-    
+
     def test_boolean_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(to_pydantic_class(bool))
         expected_value = """
