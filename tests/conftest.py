@@ -1,7 +1,7 @@
 import typing
 import pytest
 import graphene
-import pydantic2graphene.types
+import pydantic2graphene.fields
 
 
 def _get_type_sdl(obj):
@@ -27,7 +27,7 @@ def _get_interface_sdl(obj):
 
 
 def obj_to_sdl(
-    obj: typing.Union[str, pydantic2graphene.types.graphene_type],
+    obj: typing.Union[str, pydantic2graphene.fields.graphene_type],
 ) -> str:
     if isinstance(obj, str):
         return obj

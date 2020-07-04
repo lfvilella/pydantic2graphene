@@ -1,4 +1,5 @@
 class Pydantic2GrapheneException(Exception):
+
     pass
 
 
@@ -7,6 +8,10 @@ class FieldNotSupported(Pydantic2GrapheneException):
 
 
 class InvalidType(Pydantic2GrapheneException):
+    pass
+
+
+class InvalidListType(FieldNotSupported):
     pass
 
 
