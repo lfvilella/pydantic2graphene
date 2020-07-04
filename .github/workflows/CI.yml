@@ -34,7 +34,7 @@ jobs:
       run: |
         pytest --cov=./pydantic2graphene
     - name: Update converage report
-    env:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-    run: |
-      codecov --token="$CODECOV_TOKEN"
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      run: |
+        codecov --token="$CODECOV_TOKEN"
