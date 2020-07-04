@@ -8,65 +8,34 @@ Easy way to convert pydantic2graphene models to graphene objects.
 
 ## A Simple Example
 
+Using `to_graphene`
+
 ```py
->>> import graphene
->>> import pydantic
->>> import pydantic2graphene
->>> 
->>> class User(pydantic.BaseModel):
-...     email: str
-...     active: bool = False
-... 
->>> UserGql = pydantic2graphene.to_graphene(User)
->>> 
->>> class Query(graphene.ObjectType):
-...     all_users = graphene.List(UserGql)
-...     @staticmethod
-...     def resolve_all_users(parent, info):
-...         return [
-...             {'email': 'my-email@localhost.com', 'active': True},
-...             User(email='email@localhost.com', active=False),
-...         ]
-... 
->>> schema = graphene.Schema(query=Query)
->>> print(schema)
-schema {
-  query: Query
-}
+import pydantic
+import pydantic2graphene
 
-type Query {
-  allUsers: [UserGql]
-}
+class User(pydantic.BaseModel):
+    email: str
+    active: bool = False
 
-type UserGql {
-  email: String!
-  active: Boolean
-}
+UserGql = pydantic2graphene.to_graphene(User)
+```
 
->>> command = '''
-... query {
-...     emailOnly: allUsers {
-...         email
-...     }
-... 
-...     all: allUsers {
-...         isActive: active
-...         email
-...     }
-... }
-... '''
->>>
->>> print(schema.execute(command))
-{
-    'data': {
-        'emailOnly': [
-            {'email': 'my-email@localhost.com'},
-            {'email': 'email@localhost.com'}
-        ],
-        'all': [
-            {'isActive': True, 'email': 'my-email@localhost.com'}, 
-            {'isActive': False, 'email': 'email@localhost.com'}
-        ]
-    }
-}
+Converting to multiple graphene types with `ConverterToGrapheneBase`
+
+```py
+import pydantic
+import pydantic2graphene
+
+class User(pydantic.BaseModel):
+    email: str
+    active: bool = False
+
+class UserConverter(pydantic2graphene.ConverterToGrapheneBase):
+    class Config:
+        model = User
+
+UserGql = UserConverter.as_class()  # graphene.ObjectType
+UserInputGql = UserConverter.as_class(graphene.InputObjectType)
+UserInterfaceGql = UserConverter.as_class(graphene.Interface)
 ```
