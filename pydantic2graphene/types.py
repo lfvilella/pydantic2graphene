@@ -14,6 +14,8 @@ LIST_SHAPES = {
     pydantic.fields.SHAPE_TUPLE_ELLIPSIS,
     pydantic.fields.SHAPE_SEQUENCE,
     pydantic.fields.SHAPE_SET,
+    pydantic.fields.SHAPE_FROZENSET,
+    pydantic.fields.SHAPE_ITERABLE,
 }
 
 TYPE_MAPPING = {

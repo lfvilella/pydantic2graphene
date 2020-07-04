@@ -5,6 +5,7 @@ __all__ = [
 ]
 
 import typing
+import logging
 import graphene
 import pydantic
 import inspect
@@ -15,6 +16,12 @@ from . import types
 
 def _get_field_by_type(pydantic_field: pydantic.fields.ModelField):
     type_ = pydantic_field.type_
+    type_args = getattr(type_, '__args__', [])
+
+    if pydantic_field.shape in types.LIST_SHAPES and len(type_args):
+        type_ = type_args[0]
+        if len(type_args) > 1:
+            logging.warn('%s, has multiple only the first type was used', pydantic_field.name)
 
     field = types.TYPE_MAPPING.get(type_)
     if field:
