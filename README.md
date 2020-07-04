@@ -1,7 +1,6 @@
 # pydantic2graphene
 
 [![CI](https://github.com/lfvilella/pydantic2graphene/workflows/CI/badge.svg?event=push)](https://github.com/lfvilella/pydantic2graphene/actions?query=event%3Apush+branch%3Amaster+workflow%3ACI)
-
 [![license](https://img.shields.io/github/license/lfvilella/pydantic2graphene.svg)](https://github.com/lfvilella/pydantic2graphene/blob/master/LICENSE)
 
 Easy way to convert pydantic2graphene models to graphene objects.
