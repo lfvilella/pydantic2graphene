@@ -1,6 +1,7 @@
 import typing
 import graphene
 import pydantic
+import datetime
 
 
 NOT_SUPPORTED_SHAPES = {
@@ -22,6 +23,14 @@ TYPE_MAPPING = {
     int: graphene.Int,
     bytes: graphene.String,
     list: graphene.List(graphene.String),
+    # tuple: None,
+    # dict: None,
+    # set: None,
+    # frozenset: None,
+    datetime.date: graphene.types.datetime.Date,
+    datetime.datetime: graphene.types.datetime.DateTime,
+    datetime.time: graphene.types.datetime.Time,
+    # datetime.timedelta: None,
 }
 
 graphene_type = typing.Union[
