@@ -61,23 +61,23 @@ class TestTypeMappingPydantic2Graphene:
     def test_list_field(self, normalize_sdl):
         with pytest.raises(pydantic2graphene.errors.FieldNotSupported):
             pydantic2graphene.to_graphene(to_pydantic_class(list))
-    
+
     def test_tuple_field(self, normalize_sdl):
         with pytest.raises(pydantic2graphene.errors.FieldNotSupported):
             pydantic2graphene.to_graphene(to_pydantic_class(tuple))
-    
+
     def test_dict_field(self, normalize_sdl):
         with pytest.raises(pydantic2graphene.errors.FieldNotSupported):
             pydantic2graphene.to_graphene(to_pydantic_class(dict))
-    
+
     def test_set_field(self, normalize_sdl):
         with pytest.raises(pydantic2graphene.errors.FieldNotSupported):
             pydantic2graphene.to_graphene(to_pydantic_class(set))
-    
+
     def test_frozenset_field(self, normalize_sdl):
         with pytest.raises(pydantic2graphene.errors.FieldNotSupported):
             pydantic2graphene.to_graphene(to_pydantic_class(frozenset))
-    
+
     def test_datetime_date_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(to_pydantic_class(datetime.date))
         expected_value = """
@@ -119,28 +119,25 @@ class TestTypeMappingPydantic2Graphene:
 
     def test_type_var_field(self):
         with pytest.raises(pydantic2graphene.errors.FieldNotSupported):
-            pydantic2graphene.to_graphene(to_pydantic_class(typing.TypeVar('custom_types')))
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(typing.TypeVar("custom_types"))
+            )
 
     def test_optional_field(self, normalize_sdl):
-        value = pydantic2graphene.to_graphene(to_pydantic_class(typing.Optional[int]))
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(typing.Optional[int])
+        )
         expected_value = """
             type FakeGql {
                 field: Int
             }
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
-    
+
     def test_typing_list_field(self, normalize_sdl):
-        value = pydantic2graphene.to_graphene(to_pydantic_class(typing.List[str]))
-        expected_value = """
-            type FakeGql {
-                field: [String!]!
-            }
-        """
-        assert normalize_sdl(value) == normalize_sdl(expected_value)
-    
-    def test_typing_list_field(self, normalize_sdl):
-        value = pydantic2graphene.to_graphene(to_pydantic_class(typing.List[str]))
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(typing.List[str])
+        )
         expected_value = """
             type FakeGql {
                 field: [String!]!
