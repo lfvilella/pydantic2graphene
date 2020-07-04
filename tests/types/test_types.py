@@ -158,7 +158,9 @@ class TestTypeMappingPydantic2Graphene:
 
     def test_typing_dict_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
-            pydantic2graphene.to_graphene(to_pydantic_class(typing.Dict[str, str]))
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(typing.Dict[str, str])
+            )
 
     def test_typing_set_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(
@@ -192,7 +194,7 @@ class TestTypeMappingPydantic2Graphene:
             }
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
-    
+
     def test_typing_iterable_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(
             to_pydantic_class(typing.Iterable[str])
@@ -207,3 +209,9 @@ class TestTypeMappingPydantic2Graphene:
     def test_typing_type_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
             pydantic2graphene.to_graphene(to_pydantic_class(typing.Type[str]))
+
+    def test_typing_callable_field(self):
+        with pytest.raises(pydantic2graphene.FieldNotSupported):
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(typing.Callable[[int], str])
+            )
