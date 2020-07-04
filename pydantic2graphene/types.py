@@ -20,6 +20,12 @@ TYPE_MAPPING = {
     bool: graphene.Boolean,
     float: graphene.Float,
     int: graphene.Int,
+    bytes: graphene.String,
+    list: graphene.List(graphene.String),
+    tuple: graphene.String,
+    dict: graphene.String,
+    set: graphene.String,
+    frozenset: graphene.String,
 }
 
 graphene_type = typing.Union[
