@@ -19,6 +19,9 @@ def _get_field_by_type(pydantic_field: pydantic.fields.ModelField):
     field = types.TYPE_MAPPING.get(type_)
     if field:
         return field
+    
+    if type_ in types.LIST_FIELDS_NOT_TYPED:
+        raise errors.InvalidListType('Lists must be type, e.g typing.List[int]')
 
     if inspect.isclass(type_) and issubclass(type_, pydantic.BaseModel):
         return to_graphene(type_)
