@@ -32,4 +32,9 @@ jobs:
         flake8 .
     - name: Test with pytest
       run: |
-        pytest
+        pytest --cov=./pydantic2graphene
+    - name: Update converage report
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      run: |
+        codecov --token="$CODECOV_TOKEN"
