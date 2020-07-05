@@ -44,22 +44,35 @@ jobs:
           codecov --token="$CODECOV_TOKEN"
           deactivate
 
-    - name: Test graphene==1.0.1
+    - name: Test graphene==1.0.2
+      env:
+        VERSION: "1.0.2"
       run: |
-          ENV_PATH="/tmp/.venv-graphene-1.0.1"
-          python -m venv $ENV_PATH
-          source $ENV_PATH/bin/activate
+          python -m venv /tmp/.venv-graphene-$VERSION
+          source /tmp/.venv-graphene-$VERSION/bin/activate
           python -m pip install --upgrade pip
-          pip install "graphql-core>=1.0,<2" "graphql-relay>=0.4.4,<1" iso8601==0.1.12 graphene==1.0 pydantic==1.5.1 pytest==5.4.3
+          pip install "graphql-core>=1.0,<2" "graphql-relay>=0.4.4,<1" iso8601==0.1.12 graphene==$VERSION pydantic==1.5.1 pytest==5.4.3
+          pytest
+          deactivate
+
+    - name: Test graphene==1.0.1
+      env:
+        VERSION: "1.0.1"
+      run: |
+          python -m venv /tmp/.venv-graphene-$VERSION
+          source /tmp/.venv-graphene-$VERSION/bin/activate
+          python -m pip install --upgrade pip
+          pip install "graphql-core>=1.0,<2" "graphql-relay>=0.4.4,<1" iso8601==0.1.12 graphene==$VERSION pydantic==1.5.1 pytest==5.4.3
           pytest
           deactivate
 
     - name: Test graphene==1.0
+      env:
+        VERSION: "1.0"
       run: |
-          ENV_PATH="/tmp/.venv-graphene-1.0"
-          python -m venv $ENV_PATH
-          source $ENV_PATH/bin/activate
+          python -m venv /tmp/.venv-graphene-$VERSION
+          source /tmp/.venv-graphene-$VERSION/bin/activate
           python -m pip install --upgrade pip
-          pip install "graphql-core>=1.0,<2" "graphql-relay>=0.4.4,<1" iso8601==0.1.12 graphene==1.0 pydantic==1.5.1 pytest==5.4.3
+          pip install "graphql-core>=1.0,<2" "graphql-relay>=0.4.4,<1" iso8601==0.1.12 graphene==$VERSION pydantic==1.5.1 pytest==5.4.3
           pytest
           deactivate
