@@ -23,22 +23,23 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Update pip
-      run: |
-        python -m pip install --upgrade pip
+
     - name: Lint with flake8
       run: |
         python -m venv /tmp/.venv-flake8
         source /tmp/.venv-flake8/bin/activate
+        python -m pip install --upgrade pip
         pip install flake8
         flake8 .
         deactivate
+
     - name: Test latest current version
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
           python -m venv /tmp/.venv-current
           source /tmp/.venv-current/bin/activate
+          python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
           pytest --cov=./pydantic2graphene
           codecov --token="$CODECOV_TOKEN"
