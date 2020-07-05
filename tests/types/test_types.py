@@ -3,6 +3,7 @@ import typing
 import datetime
 import pydantic
 import pydantic2graphene
+import graphene
 
 
 def to_pydantic_class(field_type):
@@ -79,6 +80,11 @@ class TestTypeMappingPydantic2Graphene:
             pydantic2graphene.to_graphene(to_pydantic_class(frozenset))
 
     def test_datetime_date_field(self, normalize_sdl):
+        if graphene.__version__ == '1.0':
+            with pytest.raises(pydantic2graphene.FieldNotSupported):
+                pydantic2graphene.to_graphene(to_pydantic_class(datetime.date))
+            return
+
         value = pydantic2graphene.to_graphene(to_pydantic_class(datetime.date))
         expected_value = """
             scalarDatetypeFakeGql {
@@ -99,6 +105,11 @@ class TestTypeMappingPydantic2Graphene:
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_datetime_time_field(self, normalize_sdl):
+        if graphene.__version__ == '1.0':
+            with pytest.raises(pydantic2graphene.FieldNotSupported):
+                pydantic2graphene.to_graphene(to_pydantic_class(datetime.time))
+            return
+
         value = pydantic2graphene.to_graphene(to_pydantic_class(datetime.time))
         expected_value = """
             type FakeGql {

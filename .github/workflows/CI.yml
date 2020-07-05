@@ -33,7 +33,7 @@ jobs:
         flake8 .
         deactivate
 
-    - name: Test latest current version
+    - name: Test current version
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
@@ -43,4 +43,13 @@ jobs:
           pip install -r requirements-dev.txt
           pytest --cov=./pydantic2graphene
           codecov --token="$CODECOV_TOKEN"
+          deactivate
+
+    - name: Test graphene==1.0
+      run: |
+          python -m venv /tmp/.venv-graphene-1-0
+          source /tmp/.venv-graphene-1-0/bin/activate
+          python -m pip install --upgrade pip
+          pip install graphql-core==1.1 graphql-relay==0.5.0 iso8601==0.1.12 graphene==1.0 pydantic==1.5.1 pytest==5.4.3
+          pytest
           deactivate
