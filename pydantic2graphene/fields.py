@@ -1,5 +1,6 @@
 import datetime
 import typing
+import ipaddress
 
 import graphene
 import graphene.types.datetime
@@ -27,14 +28,23 @@ TYPE_MAPPING = {
     bytes: graphene.String,
     datetime.datetime: graphene.types.datetime.DateTime,
     typing.Pattern: graphene.String,
+    ipaddress.IPv4Address: graphene.String,
+    ipaddress.IPv4Interface: graphene.String,
+    ipaddress.IPv4Network: graphene.String,
+    ipaddress.IPv6Address: graphene.String,
+    ipaddress.IPv6Interface: graphene.String,
+    ipaddress.IPv6Network: graphene.String,
 }
-# graphene==1.0 does not support Date
+
+# graphene does not support Date on versions:
+# ('1.X', '2.0')
 try:
     TYPE_MAPPING[datetime.date] = graphene.types.datetime.Date
 except AttributeError:
     pass
 
-# graphene==1.0 does not support Time
+# graphene does not support Time on versions:
+# ('1.1.2', '1.1.1', '1.1', '1.0.2', '1.0.1', '1.0')
 try:
     TYPE_MAPPING[datetime.time] = graphene.types.datetime.Time
 except AttributeError:
