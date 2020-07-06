@@ -1,5 +1,6 @@
 import pytest
 import typing
+import ipaddress
 import datetime
 import pydantic
 import pydantic2graphene
@@ -230,6 +231,72 @@ class TestTypeMappingPydantic2Graphene:
     def test_typing_pattern_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(
             to_pydantic_class(typing.Pattern)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_ipaddress_ipv4address_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(ipaddress.IPv4Address)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_ipaddress_ipv4interface_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(ipaddress.IPv4Interface)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_ipaddress_ipv4network_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(ipaddress.IPv4Network)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_ipaddress_ipv6address_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(ipaddress.IPv6Address)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_ipaddress_ipv6interface_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(ipaddress.IPv6Interface)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_ipaddress_ipv6network_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(ipaddress.IPv6Network)
         )
         expected_value = """
             type FakeGql {
