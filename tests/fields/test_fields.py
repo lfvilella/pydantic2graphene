@@ -81,8 +81,8 @@ class TestTypeMappingPydantic2Graphene:
             pydantic2graphene.to_graphene(to_pydantic_class(frozenset))
 
     def test_datetime_date_field(self, normalize_sdl):
-        version_1_x = graphene.__version__.startswith('1.')
-        version_2_0 = graphene.__version__ == '2.0'
+        version_1_x = graphene.__version__.startswith("1.")
+        version_2_0 = graphene.__version__ == "2.0"
         if version_1_x or version_2_0:
             with pytest.raises(pydantic2graphene.FieldNotSupported):
                 pydantic2graphene.to_graphene(to_pydantic_class(datetime.date))
@@ -108,7 +108,8 @@ class TestTypeMappingPydantic2Graphene:
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_datetime_time_field(self, normalize_sdl):
-        if graphene.__version__.startswith('1.'):
+        versions_1_x = {"1.1.2", "1.1.1", "1.1", "1.0.2", "1.0.1", "1.0"}
+        if graphene.__version__ in versions_1_x:
             with pytest.raises(pydantic2graphene.FieldNotSupported):
                 pydantic2graphene.to_graphene(to_pydantic_class(datetime.time))
             return
