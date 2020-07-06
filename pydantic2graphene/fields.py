@@ -35,13 +35,14 @@ TYPE_MAPPING = {
     ipaddress.IPv6Interface: graphene.String,
     ipaddress.IPv6Network: graphene.String,
 }
-# graphene==1.0 does not support Date
+# graphene==1.X does not support Date
+# graphene==2.X does not support Date
 try:
     TYPE_MAPPING[datetime.date] = graphene.types.datetime.Date
 except AttributeError:
     pass
 
-# graphene==1.0 does not support Time
+# graphene==1.X does not support Time
 try:
     TYPE_MAPPING[datetime.time] = graphene.types.datetime.Time
 except AttributeError:
