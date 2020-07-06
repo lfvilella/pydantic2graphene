@@ -1,6 +1,8 @@
 import datetime
 import typing
 import ipaddress
+import enum
+import decimal
 
 import graphene
 import graphene.types.datetime
@@ -34,6 +36,9 @@ TYPE_MAPPING = {
     ipaddress.IPv6Address: graphene.String,
     ipaddress.IPv6Interface: graphene.String,
     ipaddress.IPv6Network: graphene.String,
+    enum.Enum: graphene.String,
+    enum.IntEnum: graphene.Int,
+    decimal.Decimal: graphene.Float,
 }
 
 # graphene does not support Date on versions:

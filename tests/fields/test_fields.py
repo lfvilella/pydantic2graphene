@@ -1,6 +1,8 @@
 import pytest
 import typing
 import ipaddress
+import enum
+import decimal
 import datetime
 import pydantic
 import pydantic2graphene
@@ -304,6 +306,39 @@ class TestTypeMappingPydantic2Graphene:
         expected_value = """
             type FakeGql {
                 field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_enum_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(enum.Enum)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_int_enum_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(enum.IntEnum)
+        )
+        expected_value = """
+            type FakeGql {
+                field: Int!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_decimal_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(decimal.Decimal)
+        )
+        expected_value = """
+            type FakeGql {
+                field: Float!
             }
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
