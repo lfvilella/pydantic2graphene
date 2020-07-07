@@ -26,7 +26,7 @@ def _get_field_by_type(pydantic_field: pydantic.fields.ModelField):
                 pydantic_field.name,
             )
 
-    field = fields.TYPE_MAPPING.get(type_)
+    field = fields.get_grapehene_field_by_type(type_)
     if field:
         return field
 

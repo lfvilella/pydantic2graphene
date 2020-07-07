@@ -5,6 +5,8 @@ import decimal
 import uuid
 import datetime
 import pathlib
+import unittest.mock
+import collections
 
 import pytest
 import pydantic
@@ -407,6 +409,23 @@ class TestTypeMappingPydantic2Graphene:
     def test_pydantic_name_email_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(
             to_pydantic_class(pydantic.NameEmail)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_pyobject_field(self):
+        with pytest.raises(pydantic2graphene.FieldNotSupported):
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(pydantic.PyObject)
+            )
+
+    def test_pydantic_color_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.color.Color)
         )
         expected_value = """
             type FakeGql {
