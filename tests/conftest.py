@@ -26,7 +26,9 @@ def _get_interface_sdl(obj):
 
 
 def obj_to_sdl(
-    obj: typing.Union[str, graphene.ObjectType, graphene.InputObjectType, graphene.Interface],
+    obj: typing.Union[
+        str, graphene.ObjectType, graphene.InputObjectType, graphene.Interface
+    ],
 ) -> str:
     if isinstance(obj, str):
         return obj

@@ -4,16 +4,17 @@ import ipaddress
 import enum
 import decimal
 import uuid
+import inspect
 
 import graphene
 import graphene.types.datetime
 import pydantic.fields
 
-NOT_SUPPORTED_SHAPES = {
+_NOT_SUPPORTED_SHAPES = {
     pydantic.fields.SHAPE_MAPPING,
 }
 
-LIST_SHAPES = {
+_LIST_SHAPES = {
     pydantic.fields.SHAPE_LIST,
     pydantic.fields.SHAPE_TUPLE,
     pydantic.fields.SHAPE_TUPLE_ELLIPSIS,
@@ -24,6 +25,7 @@ LIST_SHAPES = {
 }
 
 _TYPE_MAPPING = None
+
 
 def _get_type_mapping():
     global _TYPE_MAPPING
@@ -75,11 +77,7 @@ def _get_type_mapping():
     return _TYPE_MAPPING
 
 
-def get_grapehene_field_by_type(type_):
-    return _get_type_mapping().get(type_)
-
-
-LIST_FIELDS_NOT_TYPED = {
+_LIST_FIELDS_NOT_TYPED = {
     list,
     tuple,
     dict,
@@ -88,11 +86,31 @@ LIST_FIELDS_NOT_TYPED = {
 }
 
 
-ENUM_TYPE = (
+_ENUM_TYPE = (
     enum.Enum,
     enum.IntEnum,
 )
 
-graphene_type = typing.Union[
-    graphene.ObjectType, graphene.InputObjectType, graphene.Interface,
-]
+
+def get_grapehene_field_by_type(type_):
+    return _get_type_mapping().get(type_)
+
+
+def is_field_not_allowed_type(type_) -> bool:
+    return type_ in _LIST_FIELDS_NOT_TYPED
+
+
+def is_enum_type(type_) -> bool:
+    return inspect.isclass(type_) and issubclass(type_, _ENUM_TYPE)
+
+
+def is_list_shape(shape) -> bool:
+    return shape in _LIST_SHAPES
+
+
+def is_not_supported_shape(shape) -> bool:
+    return shape in _NOT_SUPPORTED_SHAPES
+
+
+def is_pydantic_base_model(type_) -> bool:
+    return inspect.isclass(type_) and issubclass(type_, pydantic.BaseModel)

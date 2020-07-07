@@ -5,8 +5,6 @@ import decimal
 import uuid
 import datetime
 import pathlib
-import unittest.mock
-import collections
 
 import pytest
 import pydantic
@@ -320,9 +318,7 @@ class TestTypeMappingPydantic2Graphene:
             ONE = 1
             TWO = 2
 
-        value = pydantic2graphene.to_graphene(
-            to_pydantic_class(EnumTest)
-        )
+        value = pydantic2graphene.to_graphene(to_pydantic_class(EnumTest))
         expected_value = """
             enum EnumTest {
                 ONE
@@ -340,9 +336,7 @@ class TestTypeMappingPydantic2Graphene:
             ONE = 1
             TWO = 2
 
-        value = pydantic2graphene.to_graphene(
-            to_pydantic_class(Enumer)
-        )
+        value = pydantic2graphene.to_graphene(to_pydantic_class(Enumer))
         expected_value = """
             enum Enumer {
                 ONE
@@ -368,14 +362,10 @@ class TestTypeMappingPydantic2Graphene:
 
     def test_pathlib_path_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
-            pydantic2graphene.to_graphene(
-                to_pydantic_class(pathlib.Path)
-            )
+            pydantic2graphene.to_graphene(to_pydantic_class(pathlib.Path))
 
     def test_uuid_field(self, normalize_sdl):
-        value = pydantic2graphene.to_graphene(
-            to_pydantic_class(uuid.UUID)
-        )
+        value = pydantic2graphene.to_graphene(to_pydantic_class(uuid.UUID))
         expected_value = """
             type FakeGql {
                 field: String!
@@ -385,9 +375,7 @@ class TestTypeMappingPydantic2Graphene:
 
     def test_pydantic_filepath_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
-            pydantic2graphene.to_graphene(
-                to_pydantic_class(pydantic.FilePath)
-            )
+            pydantic2graphene.to_graphene(to_pydantic_class(pydantic.FilePath))
 
     def test_pydantic_directorypath_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
@@ -395,33 +383,9 @@ class TestTypeMappingPydantic2Graphene:
                 to_pydantic_class(pydantic.DirectoryPath)
             )
 
-    def test_pydantic_email_str_field(self, normalize_sdl):
-        value = pydantic2graphene.to_graphene(
-            to_pydantic_class(pydantic.EmailStr)
-        )
-        expected_value = """
-            type FakeGql {
-                field: String!
-            }
-        """
-        assert normalize_sdl(value) == normalize_sdl(expected_value)
-
-    def test_pydantic_name_email_field(self, normalize_sdl):
-        value = pydantic2graphene.to_graphene(
-            to_pydantic_class(pydantic.NameEmail)
-        )
-        expected_value = """
-            type FakeGql {
-                field: String!
-            }
-        """
-        assert normalize_sdl(value) == normalize_sdl(expected_value)
-
     def test_pydantic_pyobject_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
-            pydantic2graphene.to_graphene(
-                to_pydantic_class(pydantic.PyObject)
-            )
+            pydantic2graphene.to_graphene(to_pydantic_class(pydantic.PyObject))
 
     def test_pydantic_color_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(
