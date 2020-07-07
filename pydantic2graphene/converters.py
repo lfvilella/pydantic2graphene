@@ -35,6 +35,9 @@ def _get_field_by_type(pydantic_field: pydantic.fields.ModelField):
             "Lists must be type, e.g typing.List[int]"
         )
 
+    if inspect.isclass(type_) and issubclass(type_, fields.ENUM_TYPE):
+        return graphene.Enum.from_enum(type_)
+
     if inspect.isclass(type_) and issubclass(type_, pydantic.BaseModel):
         return to_graphene(type_)
 

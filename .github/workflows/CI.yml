@@ -45,6 +45,7 @@ jobs:
           deactivate
 
     - name: Test graphene==2.1.8
+      if: ${{ always() }}
       env:
         VERSION: "2.1.8"
       run: |
@@ -56,6 +57,7 @@ jobs:
           deactivate
 
     - name: Test graphene==2.1.7
+      if: ${{ always() }}
       env:
         VERSION: "2.1.7"
       run: |
@@ -67,6 +69,7 @@ jobs:
           deactivate
 
     - name: Test graphene==2.1.6
+      if: ${{ always() }}
       env:
         VERSION: "2.1.6"
       run: |
@@ -78,6 +81,7 @@ jobs:
           deactivate
 
     - name: Test graphene==2.1.5
+      if: ${{ always() }}
       env:
         VERSION: "2.1.5"
       run: |
@@ -89,6 +93,7 @@ jobs:
           deactivate
 
     - name: Test graphene==2.1.3
+      if: ${{ always() }}
       env:
         VERSION: "2.1.3"
       run: |
@@ -100,6 +105,7 @@ jobs:
           deactivate
 
     - name: Test graphene==2.1.2
+      if: ${{ always() }}
       env:
         VERSION: "2.1.2"
       run: |
@@ -111,6 +117,7 @@ jobs:
           deactivate
 
     - name: Test graphene==2.1.1
+      if: ${{ always() }}
       env:
         VERSION: "2.1.1"
       run: |
@@ -122,6 +129,7 @@ jobs:
           deactivate
 
     - name: Test graphene==2.1
+      if: ${{ always() }}
       env:
         VERSION: "2.1"
       run: |
@@ -133,6 +141,7 @@ jobs:
           deactivate
 
     - name: Test graphene==2.0.1
+      if: ${{ always() }}
       env:
         VERSION: "2.0.1"
       run: |
@@ -144,6 +153,7 @@ jobs:
           deactivate
 
     - name: Test graphene==2.0
+      if: ${{ always() }}
       env:
         VERSION: "2.0"
       run: |
@@ -155,6 +165,7 @@ jobs:
           deactivate
 
     - name: Test graphene==1.4.2
+      if: ${{ always() }}
       env:
         VERSION: "1.4.2"
       run: |
@@ -166,6 +177,7 @@ jobs:
           deactivate
 
     - name: Test graphene==1.4.1
+      if: ${{ always() }}
       env:
         VERSION: "1.4.1"
       run: |
@@ -177,6 +189,7 @@ jobs:
           deactivate
 
     - name: Test graphene==1.4
+      if: ${{ always() }}
       env:
         VERSION: "1.4"
       run: |
@@ -188,6 +201,7 @@ jobs:
           deactivate
 
     - name: Test graphene==1.3
+      if: ${{ always() }}
       env:
         VERSION: "1.3"
       run: |
@@ -199,6 +213,7 @@ jobs:
           deactivate
 
     - name: Test graphene==1.2
+      if: ${{ always() }}
       env:
         VERSION: "1.2"
       run: |
@@ -210,6 +225,7 @@ jobs:
           deactivate
 
     - name: Test graphene==1.1.3
+      if: ${{ always() }}
       env:
         VERSION: "1.1.3"
       run: |
@@ -221,6 +237,7 @@ jobs:
           deactivate
 
     - name: Test graphene==1.1.2
+      if: ${{ always() }}
       env:
         VERSION: "1.1.2"
       run: |
@@ -232,6 +249,7 @@ jobs:
           deactivate
 
     - name: Test graphene==1.1.1
+      if: ${{ always() }}
       env:
         VERSION: "1.1.1"
       run: |
@@ -243,6 +261,7 @@ jobs:
           deactivate
 
     - name: Test graphene==1.1
+      if: ${{ always() }}
       env:
         VERSION: "1.1"
       run: |
@@ -254,6 +273,7 @@ jobs:
           deactivate
 
     - name: Test graphene==1.0.2
+      if: ${{ always() }}
       env:
         VERSION: "1.0.2"
       run: |
@@ -265,6 +285,7 @@ jobs:
           deactivate
 
     - name: Test graphene==1.0.1
+      if: ${{ always() }}
       env:
         VERSION: "1.0.1"
       run: |
@@ -276,6 +297,7 @@ jobs:
           deactivate
 
     - name: Test graphene==1.0
+      if: ${{ always() }}
       env:
         VERSION: "1.0"
       run: |

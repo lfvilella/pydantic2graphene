@@ -1,6 +1,9 @@
 import datetime
 import typing
 import ipaddress
+import enum
+import decimal
+import uuid
 
 import graphene
 import graphene.types.datetime
@@ -34,6 +37,8 @@ TYPE_MAPPING = {
     ipaddress.IPv6Address: graphene.String,
     ipaddress.IPv6Interface: graphene.String,
     ipaddress.IPv6Network: graphene.String,
+    decimal.Decimal: graphene.Float,
+    uuid.UUID: graphene.String,
 }
 
 # graphene does not support Date on versions:
@@ -58,6 +63,12 @@ LIST_FIELDS_NOT_TYPED = {
     set,
     frozenset,
 }
+
+
+ENUM_TYPE = (
+    enum.Enum,
+    enum.IntEnum,
+)
 
 graphene_type = typing.Union[
     graphene.ObjectType, graphene.InputObjectType, graphene.Interface,

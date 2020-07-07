@@ -1,7 +1,12 @@
-import pytest
 import typing
 import ipaddress
+import enum
+import decimal
+import uuid
 import datetime
+import pathlib
+
+import pytest
 import pydantic
 import pydantic2graphene
 import graphene
@@ -300,6 +305,74 @@ class TestTypeMappingPydantic2Graphene:
     def test_ipaddress_ipv6network_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(
             to_pydantic_class(ipaddress.IPv6Network)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_enum_field(self, normalize_sdl):
+        class EnumTest(enum.Enum):
+            ONE = 1
+            TWO = 2
+
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(EnumTest)
+        )
+        expected_value = """
+            enum EnumTest {
+                ONE
+                TWO
+            }
+
+            type FakeGql {
+                field: EnumTest!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_int_enum_field(self, normalize_sdl):
+        class Enumer(enum.IntEnum):
+            ONE = 1
+            TWO = 2
+
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(Enumer)
+        )
+        expected_value = """
+            enum Enumer {
+                ONE
+                TWO
+            }
+
+            type FakeGql {
+                field: Enumer!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_decimal_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(decimal.Decimal)
+        )
+        expected_value = """
+            type FakeGql {
+                field: Float!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pathlib_path_field(self):
+        with pytest.raises(pydantic2graphene.FieldNotSupported):
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(pathlib.Path)
+            )
+
+    def test_uuid_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(uuid.UUID)
         )
         expected_value = """
             type FakeGql {
