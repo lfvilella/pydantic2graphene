@@ -65,23 +65,23 @@ class TestTypeMappingPydantic2Graphene:
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
-    def test_list_field(self, normalize_sdl):
+    def test_list_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
             pydantic2graphene.to_graphene(to_pydantic_class(list))
 
-    def test_tuple_field(self, normalize_sdl):
+    def test_tuple_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
             pydantic2graphene.to_graphene(to_pydantic_class(tuple))
 
-    def test_dict_field(self, normalize_sdl):
+    def test_dict_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
             pydantic2graphene.to_graphene(to_pydantic_class(dict))
 
-    def test_set_field(self, normalize_sdl):
+    def test_set_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
             pydantic2graphene.to_graphene(to_pydantic_class(set))
 
-    def test_frozenset_field(self, normalize_sdl):
+    def test_frozenset_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
             pydantic2graphene.to_graphene(to_pydantic_class(frozenset))
 
@@ -409,17 +409,17 @@ class TestTypeMappingPydantic2Graphene:
     #     """
     #     assert normalize_sdl(value) == normalize_sdl(expected_value)
 
-    def test_pydantic_payment_card_number_field(self, normalize_sdl):
+    def test_pydantic_payment_card_number_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
             pydantic2graphene.to_graphene(
                 to_pydantic_class(pydantic.PaymentCardNumber)
             )
 
-    def test_pydantic_any_url_field(self, normalize_sdl):
+    def test_pydantic_any_url_field(sel):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
             pydantic2graphene.to_graphene(to_pydantic_class(pydantic.AnyUrl))
 
-    def test_pydantic_any_http_url_field(self, normalize_sdl):
+    def test_pydantic_any_http_url_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
             pydantic2graphene.to_graphene(
                 to_pydantic_class(pydantic.AnyHttpUrl)
@@ -439,17 +439,17 @@ class TestTypeMappingPydantic2Graphene:
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
-    def test_pydantic_postgresdsn_field(self, normalize_sdl):
+    def test_pydantic_postgresdsn_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
             pydantic2graphene.to_graphene(
                 to_pydantic_class(pydantic.PostgresDsn)
             )
 
-    def test_pydantic_redisdsn_field(self, normalize_sdl):
+    def test_pydantic_redisdsn_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
             pydantic2graphene.to_graphene(to_pydantic_class(pydantic.RedisDsn))
 
-    def test_pydantic_stricturl_field(self, normalize_sdl):
+    def test_pydantic_stricturl_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
             pydantic2graphene.to_graphene(
                 to_pydantic_class(pydantic.stricturl())
@@ -550,6 +550,50 @@ class TestTypeMappingPydantic2Graphene:
         expected_value = """
             type FakeGql {
                 field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_negative_float_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.NegativeFloat)
+        )
+        expected_value = """
+            type FakeGql {
+                field: Float!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_negative_int_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.NegativeInt)
+        )
+        expected_value = """
+            type FakeGql {
+                field: Int!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_positive_float_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.PositiveFloat)
+        )
+        expected_value = """
+            type FakeGql {
+                field: Float!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_positive_int_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.PositiveInt)
+        )
+        expected_value = """
+            type FakeGql {
+                field: Int!
             }
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)

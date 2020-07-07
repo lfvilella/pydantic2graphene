@@ -62,6 +62,10 @@ def _get_type_mapping():
         pydantic.IPvAnyAddress: graphene.String,
         pydantic.IPvAnyInterface: graphene.String,
         pydantic.IPvAnyNetwork: graphene.String,
+        pydantic.NegativeFloat: graphene.Float,
+        pydantic.NegativeInt: graphene.Int,
+        pydantic.PositiveFloat: graphene.Float,
+        pydantic.PositiveInt: graphene.Int,
     }
 
     # graphene does not support Date on versions:
