@@ -39,6 +39,8 @@ TYPE_MAPPING = {
     ipaddress.IPv6Network: graphene.String,
     decimal.Decimal: graphene.Float,
     uuid.UUID: graphene.String,
+    pydantic.EmailStr: graphene.String,
+    pydantic.NameEmail: graphene.String,
 }
 
 # graphene does not support Date on versions:
@@ -53,6 +55,13 @@ except AttributeError:
 try:
     TYPE_MAPPING[datetime.time] = graphene.types.datetime.Time
 except AttributeError:
+    pass
+
+# pydantic needs 'email-validator' to this fields
+try:
+    TYPE_MAPPING[pydantic.EmailStr] = graphene.String
+    TYPE_MAPPING[pydantic.NameEmail] = graphene.String
+except ImportError:
     pass
 
 

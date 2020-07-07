@@ -380,3 +380,37 @@ class TestTypeMappingPydantic2Graphene:
             }
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_filepath_field(self):
+        with pytest.raises(pydantic2graphene.FieldNotSupported):
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(pydantic.FilePath)
+            )
+
+    def test_pydantic_directorypath_field(self):
+        with pytest.raises(pydantic2graphene.FieldNotSupported):
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(pydantic.DirectoryPath)
+            )
+
+    def test_pydantic_email_str_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.EmailStr)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_name_email_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.NameEmail)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
