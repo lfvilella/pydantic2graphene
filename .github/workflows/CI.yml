@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  current:
 
     runs-on: ubuntu-latest
     strategy:
@@ -21,289 +21,69 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Lint with flake8
+    - name: Install dependency
       run: |
-        ENV_PATH="/tmp/.venv-flake8"
-        python -m venv $ENV_PATH
-        source $ENV_PATH/bin/activate
-        python -m pip install --upgrade pip
-        pip install flake8
-        flake8 .
-        deactivate
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
 
-    - name: Test current version
+    - name: Flake8
+      run: flake8 .
+
+    - name: Pytest
+      run: |
+          pytest --cov=./pydantic2graphene
+
+    - name: Coverage Report
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-          ENV_PATH="/tmp/.venv-current"
-          python -m venv $ENV_PATH
-          source $ENV_PATH/bin/activate
-          python -m pip install --upgrade pip
-          pip install -r requirements-dev.txt
-          pytest --cov=./pydantic2graphene
           codecov --token="$CODECOV_TOKEN"
-          deactivate
 
-    - name: Test graphene==2.1.8
-      if: ${{ always() }}
-      env:
-        VERSION: "2.1.8"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
+  backwards-compatibility:
 
-    - name: Test graphene==2.1.7
-      if: ${{ always() }}
-      env:
-        VERSION: "2.1.7"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pip-packages: [
+          graphene==2.1.8 pydantic==1.5.1 pytest==5.4.3,
+          graphene==2.1.7 pydantic==1.5.1 pytest==5.4.3,
+          graphene==2.1.6 pydantic==1.5.1 pytest==5.4.3,
+          graphene==2.1.5 pydantic==1.5.1 pytest==5.4.3,
+          graphene==2.1.3 pydantic==1.5.1 pytest==5.4.3,
+          graphene==2.1.2 pydantic==1.5.1 pytest==5.4.3,
+          graphene==2.1.1 pydantic==1.5.1 pytest==5.4.3,
+          graphene==2.1 pydantic==1.5.1 pytest==5.4.3,
+          graphene==2.0.1 iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3,
+          graphene==2.0 graphql-core==2.0 graphql-relay==0.4.5 iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3,
+          graphene==1.4.2 graphql-core==1.1 graphql-relay==0.4.5 iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3,
+          graphene==1.4.1 graphql-core==1.1 graphql-relay==0.4.5 iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3,
+          graphene==1.4 graphql-core==1.1 graphql-relay==0.4.5 iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3,
+          graphene==1.3 graphql-core==1.0.1 graphql-relay==0.4.5 iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3,
+          graphene==1.2 graphql-core==1.0.1 graphql-relay==0.4.5 iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3,
+          graphene==1.1.3 graphql-core==1.0.1 graphql-relay==0.4.5 iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3,
+          graphene==1.1.2 graphql-core==1.0 graphql-relay==0.4.4 iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3,
+          graphene==1.1.1 graphql-core==1.0 graphql-relay==0.4.4 iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3,
+          graphene==1.1 graphql-core==1.0 graphql-relay==0.4.4 iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3,
+          graphene==1.0.2 graphql-core==1.0 graphql-relay==0.4.4 iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3,
+          graphene==1.0.1 graphql-core==1.0 graphql-relay==0.4.4 iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3,
+          graphene==1.0 graphql-core==1.0 graphql-relay==0.4.4 iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3,
+          pydantic==1.5.1 graphene==2.1.8 pytest==5.4.3,
+          pydantic==1.5 graphene==2.1.8 pytest==5.4.3,
+        ]
 
-    - name: Test graphene==2.1.6
-      if: ${{ always() }}
-      env:
-        VERSION: "2.1.6"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
 
-    - name: Test graphene==2.1.5
-      if: ${{ always() }}
+    - name: Install dependency
       env:
-        VERSION: "2.1.5"
+        PACKAGES: ${{ matrix.pip-packages }}
       run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
           python -m pip install --upgrade pip
-          pip install "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
+          pip install $PACKAGES
 
-    - name: Test graphene==2.1.3
-      if: ${{ always() }}
-      env:
-        VERSION: "2.1.3"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==2.1.2
-      if: ${{ always() }}
-      env:
-        VERSION: "2.1.2"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==2.1.1
-      if: ${{ always() }}
-      env:
-        VERSION: "2.1.1"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==2.1
-      if: ${{ always() }}
-      env:
-        VERSION: "2.1"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==2.0.1
-      if: ${{ always() }}
-      env:
-        VERSION: "2.0.1"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install "graphene==$VERSION" iso8601==0.1.12 pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==2.0
-      if: ${{ always() }}
-      env:
-        VERSION: "2.0"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install graphql-core==2.0 graphql-relay==0.4.5 iso8601==0.1.12 "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==1.4.2
-      if: ${{ always() }}
-      env:
-        VERSION: "1.4.2"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install graphql-core==1.1 graphql-relay==0.4.5 iso8601==0.1.12 "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==1.4.1
-      if: ${{ always() }}
-      env:
-        VERSION: "1.4.1"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install graphql-core==1.1 graphql-relay==0.4.5 iso8601==0.1.12 "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==1.4
-      if: ${{ always() }}
-      env:
-        VERSION: "1.4"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install graphql-core==1.1 graphql-relay==0.4.5 iso8601==0.1.12 "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==1.3
-      if: ${{ always() }}
-      env:
-        VERSION: "1.3"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install graphql-core==1.0.1 graphql-relay==0.4.5 iso8601==0.1.12 "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==1.2
-      if: ${{ always() }}
-      env:
-        VERSION: "1.2"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install graphql-core==1.0.1 graphql-relay==0.4.5 iso8601==0.1.12 "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==1.1.3
-      if: ${{ always() }}
-      env:
-        VERSION: "1.1.3"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install graphql-core==1.0.1 graphql-relay==0.4.5 iso8601==0.1.12 "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==1.1.2
-      if: ${{ always() }}
-      env:
-        VERSION: "1.1.2"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install graphql-core==1.0 graphql-relay==0.4.4 iso8601==0.1.12 "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==1.1.1
-      if: ${{ always() }}
-      env:
-        VERSION: "1.1.1"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install graphql-core==1.0 graphql-relay==0.4.4 iso8601==0.1.12 "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==1.1
-      if: ${{ always() }}
-      env:
-        VERSION: "1.1"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install graphql-core==1.0 graphql-relay==0.4.4 iso8601==0.1.12 "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==1.0.2
-      if: ${{ always() }}
-      env:
-        VERSION: "1.0.2"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install graphql-core==1.0 graphql-relay==0.4.4 iso8601==0.1.12 "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==1.0.1
-      if: ${{ always() }}
-      env:
-        VERSION: "1.0.1"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install graphql-core==1.0 graphql-relay==0.4.4 iso8601==0.1.12 "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
-
-    - name: Test graphene==1.0
-      if: ${{ always() }}
-      env:
-        VERSION: "1.0"
-      run: |
-          python -m venv "/tmp/.venv-graphene-$VERSION"
-          source "/tmp/.venv-graphene-$VERSION/bin/activate"
-          python -m pip install --upgrade pip
-          pip install graphql-core==1.0 graphql-relay==0.4.4 iso8601==0.1.12 "graphene==$VERSION" pydantic==1.5.1 pytest==5.4.3
-          pytest
-          deactivate
+    - name: Pytest
+      run: pytest
