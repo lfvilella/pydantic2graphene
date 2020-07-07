@@ -397,3 +397,159 @@ class TestTypeMappingPydantic2Graphene:
             }
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    # def test_pydantic_json_field(self, normalize_sdl):
+    #     value = pydantic2graphene.to_graphene(
+    #     to_pydantic_class(pydantic.Json)
+    # )
+    #     expected_value = """
+    #         type FakeGql {
+    #             field: String!
+    #         }
+    #     """
+    #     assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_payment_card_number_field(self, normalize_sdl):
+        with pytest.raises(pydantic2graphene.FieldNotSupported):
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(pydantic.PaymentCardNumber)
+            )
+
+    def test_pydantic_any_url_field(self, normalize_sdl):
+        with pytest.raises(pydantic2graphene.FieldNotSupported):
+            pydantic2graphene.to_graphene(to_pydantic_class(pydantic.AnyUrl))
+
+    def test_pydantic_any_http_url_field(self, normalize_sdl):
+        with pytest.raises(pydantic2graphene.FieldNotSupported):
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(pydantic.AnyHttpUrl)
+            )
+
+    def test_pydantic_http_url_field(self, normalize_sdl):
+        class MyModel(pydantic.BaseModel):
+            url: pydantic.HttpUrl
+
+        fake_url = MyModel(url="http://www.example.com")
+
+        value = pydantic2graphene.to_graphene(fake_url)
+        expected_value = """
+            type comGql {
+                url: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_postgresdsn_field(self, normalize_sdl):
+        with pytest.raises(pydantic2graphene.FieldNotSupported):
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(pydantic.PostgresDsn)
+            )
+
+    def test_pydantic_redisdsn_field(self, normalize_sdl):
+        with pytest.raises(pydantic2graphene.FieldNotSupported):
+            pydantic2graphene.to_graphene(to_pydantic_class(pydantic.RedisDsn))
+
+    def test_pydantic_stricturl_field(self, normalize_sdl):
+        with pytest.raises(pydantic2graphene.FieldNotSupported):
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(pydantic.stricturl())
+            )
+
+    def test_pydantic_uuid1_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.UUID1)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_uuid3_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.UUID3)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_uuid4_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.UUID4)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_uuid5_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.UUID5)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_secret_bytes_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.SecretBytes)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_secret_str_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.SecretStr)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_ipv_any_address_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.IPvAnyAddress)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_ipv_any_interface_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.IPvAnyInterface)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_ipv_any_network_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.IPvAnyNetwork)
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)

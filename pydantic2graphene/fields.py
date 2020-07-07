@@ -51,6 +51,17 @@ def _get_type_mapping():
         pydantic.EmailStr: graphene.String,
         pydantic.NameEmail: graphene.String,
         pydantic.color.Color: graphene.String,
+        pydantic.Json: graphene.types.json.JSONString,
+        pydantic.HttpUrl: graphene.String,
+        pydantic.UUID1: graphene.String,
+        pydantic.UUID3: graphene.String,
+        pydantic.UUID4: graphene.String,
+        pydantic.UUID5: graphene.String,
+        pydantic.SecretBytes: graphene.String,
+        pydantic.SecretStr: graphene.String,
+        pydantic.IPvAnyAddress: graphene.String,
+        pydantic.IPvAnyInterface: graphene.String,
+        pydantic.IPvAnyNetwork: graphene.String,
     }
 
     # graphene does not support Date on versions:
