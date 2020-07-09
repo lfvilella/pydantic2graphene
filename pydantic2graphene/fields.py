@@ -66,6 +66,13 @@ def _get_type_mapping():
         pydantic.NegativeInt: graphene.Int,
         pydantic.PositiveFloat: graphene.Float,
         pydantic.PositiveInt: graphene.Int,
+        pydantic.conbytes: graphene.String,
+        # pydantic.types.ConstrainedBytes: graphene.String,
+        # pydantic.condecimal: graphene.Float,
+        # pydantic.confloat: graphene.Float,
+        # pydantic.conint: graphene.Int,
+        # pydantic.constr: graphene.String,
+        # pydantic.conlist: ,
     }
 
     # graphene does not support Date on versions:
@@ -105,6 +112,37 @@ _ENUM_TYPE = (
     enum.Enum,
     enum.IntEnum,
 )
+
+_CONSTRAINED_TYPES = {
+    pydantic.types.ConstrainedBytes,
+    # pydantic.types.ConstrainedList,
+    # pydantic.types.ConstrainedStr,
+    # pydantic.types.ConstrainedInt,
+    # pydantic.types.ConstrainedFloat,
+    # pydantic.types.ConstrainedDecimal,
+
+    # pydantic.types.ConstrainedSet,
+    # pydantic.types.PositiveInt,
+    # pydantic.types.NegativeInt,
+    # pydantic.types.PositiveFloat,
+    # pydantic.types.NegativeFloat,
+    # pydantic.types.UUID1,
+    # pydantic.types.UUID3,
+    # pydantic.types.UUID4,
+    # pydantic.types.UUID5,
+
+    # 'Json',
+    # pydantic.types.Json,
+    # 'JsonWrapper',
+
+    # pydantic.types.SecretStr,
+    # pydantic.types.SecretBytes,
+    # pydantic.types.StrictBool,
+    # pydantic.types.StrictInt,
+    # pydantic.types.StrictFloat,
+    # pydantic.types.PaymentCardNumber,
+    # pydantic.types.ByteSize,
+}
 
 
 def get_grapehene_field_by_type(type_):

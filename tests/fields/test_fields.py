@@ -597,3 +597,14 @@ class TestTypeMappingPydantic2Graphene:
             }
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_conbytes_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.conbytes(max_length=10))
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
