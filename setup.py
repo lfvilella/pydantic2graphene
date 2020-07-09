@@ -2,7 +2,9 @@ import pathlib
 import setuptools
 
 version = 'v0.1'
-description = 'Easy way to convert pydantic2graphene models to graphene objects.'
+description = (
+    'Easy way to convert pydantic2graphene models to graphene objects.'
+)
 long_description = description
 
 ROOT_DIR = pathlib.Path(__file__).resolve().parent
@@ -10,6 +12,8 @@ try:
     long_description = (ROOT_DIR / 'README.md').read_text()
 except FileNotFoundError:
     pass
+
+github_url = 'https://github.com/lfvilella/pydantic2graphene'
 
 setuptools.setup(
     name='pydantic2graphene',
@@ -38,8 +42,8 @@ setuptools.setup(
     keywords=['python', 'api', 'graphql', 'graphene', 'pydantinc'],
     author='Luis Felipe Vilella',
     author_email='vilella.luisfelipe@gmail.com',
-    url='https://github.com/lfvilella/pydantic2graphene',
-    download_url=f'https://github.com/lfvilella/pydantic2graphene/archive/{version}.tar.gz',
+    url=github_url,
+    download_url=f'{github_url}/archive/{version}.tar.gz',
     license='MIT',
     packages=['pydantic2graphene'],
     package_data={'pydantic2graphene': ['py.typed']},
