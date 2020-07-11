@@ -1,4 +1,4 @@
-from .converters import (
+from .converter_helpers import (
     to_graphene,
     ConverterToGrapheneBase,
     ToGrapheneOptions,

@@ -120,7 +120,6 @@ _CONSTRAINED_TYPES = {
     # pydantic.types.ConstrainedInt,
     # pydantic.types.ConstrainedFloat,
     # pydantic.types.ConstrainedDecimal,
-
     # pydantic.types.ConstrainedSet,
     # pydantic.types.PositiveInt,
     # pydantic.types.NegativeInt,
@@ -130,11 +129,9 @@ _CONSTRAINED_TYPES = {
     # pydantic.types.UUID3,
     # pydantic.types.UUID4,
     # pydantic.types.UUID5,
-
     # 'Json',
     # pydantic.types.Json,
     # 'JsonWrapper',
-
     # pydantic.types.SecretStr,
     # pydantic.types.SecretBytes,
     # pydantic.types.StrictBool,
@@ -147,7 +144,7 @@ _CONSTRAINED_TYPES = {
 
 def _extract_pydantic_base_type(type_):
     for super_class in type_.mro():
-        if 'pydantic.types.' in repr(super_class):
+        if "pydantic.types." in repr(super_class):
             yield super_class
 
 
@@ -181,3 +178,7 @@ def is_not_supported_shape(shape) -> bool:
 
 def is_pydantic_base_model(type_) -> bool:
     return inspect.isclass(type_) and issubclass(type_, pydantic.BaseModel)
+
+
+def is_graphene_type(type_) -> bool:
+    return "graphene.types" in repr(type_)
