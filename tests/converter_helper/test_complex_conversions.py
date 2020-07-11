@@ -20,7 +20,7 @@ class Pet(pydantic.BaseModel):
 
 class Human(pydantic.BaseModel):
     name: str
-    birth_date: datetime.date
+    birth_date: datetime.datetime
     pets: typing.List[Pet] = []
 
 
@@ -28,11 +28,11 @@ class TestConvertingComplexModels:
     def test_returns_object_type_schema(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(Human, graphene.ObjectType)
         expected_value = """
-            scalar Date
+            scalar DateTime
 
             type HumanGql {
                 name: String!
-                birthDate: Date!
+                birthDate: DateTime!
                 pets: [PetGql]
             }
 
@@ -62,11 +62,11 @@ class TestConvertingComplexModels:
 
         value = Query
         expected_value = """
-            scalar Date
+            scalar DateTime
 
             type HumanGql {
                 name: String!
-                birthDate: Date!
+                birthDate: DateTime!
                 pets: [PetGql]
             }
 
