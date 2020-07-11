@@ -19,11 +19,15 @@ graphene_type_typing = typing.Union[
 ]
 
 
-def _get_field_by_type(pydantic_field: pydantic.fields.ModelField):
+def _convert_to_graphene_field(pydantic_field: pydantic.fields.ModelField):
+    shape = pydantic_field.shape
+    if fields.is_not_supported_shape(shape):
+        raise errors.FieldNotSupported(pydantic_field.name)
+
     type_ = pydantic_field.type_
     type_args = getattr(type_, "__args__", [])
 
-    if fields.is_list_shape(pydantic_field.shape) and len(type_args):
+    if fields.is_list_shape(shape) and len(type_args):
         type_ = type_args[0]
         if len(type_args) > 1:
             logging.warn(
@@ -48,14 +52,11 @@ def _get_field_by_type(pydantic_field: pydantic.fields.ModelField):
 
 
 def _get_graphene_field(pydantic_field: pydantic.fields.ModelField):
-    if fields.is_not_supported_shape(pydantic_field.shape):
-        raise errors.FieldNotSupported(pydantic_field.name)
-
     args = {
         "required": pydantic_field.required,
         "default_value": pydantic_field.default,
     }
-    field = _get_field_by_type(pydantic_field)
+    field = _convert_to_graphene_field(pydantic_field)
     if not field:
         raise errors.FieldNotSupported(pydantic_field.name)
 

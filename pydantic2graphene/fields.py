@@ -67,11 +67,11 @@ def _get_type_mapping():
         pydantic.PositiveFloat: graphene.Float,
         pydantic.PositiveInt: graphene.Int,
         pydantic.conbytes: graphene.String,
-        # pydantic.types.ConstrainedBytes: graphene.String,
-        # pydantic.condecimal: graphene.Float,
-        # pydantic.confloat: graphene.Float,
-        # pydantic.conint: graphene.Int,
-        # pydantic.constr: graphene.String,
+        pydantic.types.ConstrainedBytes: graphene.String,
+        pydantic.condecimal: graphene.Float,
+        pydantic.confloat: graphene.Float,
+        pydantic.conint: graphene.Int,
+        pydantic.constr: graphene.String,
         # pydantic.conlist: ,
     }
 
@@ -89,7 +89,7 @@ def _get_type_mapping():
     except AttributeError:
         pass
 
-    # pydantic needs 'email-validator' to this fields
+    # pydantic needs 'email-validator' to these fields
     try:
         _TYPE_MAPPING[pydantic.EmailStr] = graphene.String
         _TYPE_MAPPING[pydantic.NameEmail] = graphene.String
@@ -145,8 +145,22 @@ _CONSTRAINED_TYPES = {
 }
 
 
+def _extract_pydantic_base_type(type_):
+    for super_class in type_.mro():
+        if 'pydantic.types.' in repr(super_class):
+            yield super_class
+
+
 def get_grapehene_field_by_type(type_):
-    return _get_type_mapping().get(type_)
+    mapping = _get_type_mapping()
+
+    if type_ in mapping:
+        return mapping[type_]
+
+    if inspect.isclass(type_):
+        for pydantic_type in _extract_pydantic_base_type(type_):
+            if pydantic_type in mapping:
+                return mapping[pydantic_type]
 
 
 def is_field_not_allowed_type(type_) -> bool:
