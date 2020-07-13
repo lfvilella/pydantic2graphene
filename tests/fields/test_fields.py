@@ -600,7 +600,51 @@ class TestTypeMappingPydantic2Graphene:
 
     def test_pydantic_conbytes_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(
-            to_pydantic_class(pydantic.conbytes(max_length=10))
+            to_pydantic_class(pydantic.conbytes())
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_condecimal_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.condecimal())
+        )
+        expected_value = """
+            type FakeGql {
+                field: Float!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_confloat_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.confloat())
+        )
+        expected_value = """
+            type FakeGql {
+                field: Float!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_conint_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.conint())
+        )
+        expected_value = """
+            type FakeGql {
+                field: Int!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_constr_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.constr())
         )
         expected_value = """
             type FakeGql {

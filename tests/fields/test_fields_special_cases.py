@@ -61,3 +61,16 @@ class TestPydanticEmailFieldNotAvailable:
             }
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+
+class FakeConList(str):
+    pass
+
+
+@unittest.mock.patch("pydantic.conlist", FakeConList)
+class TestPydanticConListFieldNotAvailable:
+    def test_pydantic_conlist_field(self):
+        with pytest.raises(pydantic2graphene.FieldNotSupported):
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(pydantic.conlist)
+            )
