@@ -399,6 +399,25 @@ class TestTypeMappingPydantic2Graphene:
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_pydantic_json_field(self, normalize_sdl):
+        versions_1_x = {
+            "1.4.2",
+            "1.4.1",
+            "1.4",
+            "1.3",
+            "1.2",
+            "1.1.3",
+            "1.1.2",
+            "1.1.1",
+            "1.1",
+            "1.0.2",
+            "1.0.1",
+            "1.0",
+        }
+        if graphene.__version__ in versions_1_x:
+            with pytest.raises(pydantic2graphene.FieldNotSupported):
+                pydantic2graphene.to_graphene(to_pydantic_class(pydantic.Json))
+            return
+
         value = pydantic2graphene.to_graphene(to_pydantic_class(pydantic.Json))
         expected_value = """
             type FakeGql {
