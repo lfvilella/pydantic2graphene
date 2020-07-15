@@ -140,6 +140,10 @@ class ToGraphene:
         if fields.is_pydantic_base_model(type_):
             return ToGraphene(type_).convert()
 
+        field_outer = fields.get_grapehene_field_by_type(pydantic_field.outer_type_)
+        if field_outer:
+            return field_outer
+
     def _get_graphene_field(self, pydantic_field: pydantic.fields.ModelField):
         args = {
             "required": pydantic_field.required,

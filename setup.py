@@ -1,7 +1,8 @@
 import pathlib
 import setuptools
+import re
 
-version = 'v0.1'
+
 description = (
     'Easy way to convert pydantic2graphene models to graphene objects.'
 )
@@ -12,6 +13,11 @@ try:
     long_description = (ROOT_DIR / 'README.md').read_text()
 except FileNotFoundError:
     pass
+
+version_txt = (ROOT_DIR / 'pydantic2graphene' / 'version.py').read_text()
+version = re.search(r'v\d+(\.\d+)+', version_txt).group()
+
+requirements = (ROOT_DIR / 'requirements.txt').read_text().split()
 
 github_url = 'https://github.com/lfvilella/pydantic2graphene'
 
@@ -48,8 +54,5 @@ setuptools.setup(
     packages=['pydantic2graphene'],
     package_data={'pydantic2graphene': ['py.typed']},
     python_requires='>=3.6,<3.9',
-    install_requires=[
-        'graphene>=1.0,<=2.1.8',
-        'pydantic>=1.5,<=1.5.1',
-    ],
+    install_requires=requirements,
 )
