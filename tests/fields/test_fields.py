@@ -102,20 +102,20 @@ class TestTypeMappingPydantic2Graphene:
             }
         """
 
-        version_1_6 = pydantic.VERSION.startswith("1.6")
-        if version_1_6:
-            expected_value = '''
-                type FakeGql {
-                    field: Date!
-                }
+        # version_1_6 = pydantic.VERSION.startswith("1.6")
+        # if version_1_6:
+        #     expected_value = '''
+        #         type FakeGql {
+        #             field: Date!
+        #         }
 
-                """
-                The `Date` scalar type represents a Date
-                value as specified by
-                [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
-                """
-                scalar Date
-            '''
+        #         """
+        #         The `Date` scalar type represents a Date
+        #         value as specified by
+        #         [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+        #         """
+        #         scalar Date
+        #     '''
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_datetime_datetime_field(self, normalize_sdl):
@@ -130,20 +130,20 @@ class TestTypeMappingPydantic2Graphene:
             }
         """
 
-        version_1_6 = pydantic.VERSION.startswith("1.6")
-        if version_1_6:
-            expected_value = '''
-                type FakeGql {
-                    field: DateTime!
-                }
+        # version_1_6 = pydantic.VERSION.startswith("1.6")
+        # if version_1_6:
+        #     expected_value = '''
+        #         type FakeGql {
+        #             field: DateTime!
+        #         }
 
-                """
-                The `DateTime` scalar type represents a DateTime
-                value as specified by
-                [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
-                """
-                scalar DateTime
-            '''
+        #         """
+        #         The `DateTime` scalar type represents a DateTime
+        #         value as specified by
+        #         [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+        #         """
+        #         scalar DateTime
+        #     '''
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_datetime_time_field(self, normalize_sdl):
@@ -162,20 +162,20 @@ class TestTypeMappingPydantic2Graphene:
             scalar Time
         """
 
-        version_1_6 = pydantic.VERSION.startswith("1.6")
-        if version_1_6:
-            expected_value = '''
-                type FakeGql {
-                    field: Time!
-                }
+        # version_1_6 = pydantic.VERSION.startswith("1.6")
+        # if version_1_6:
+        #     expected_value = '''
+        #         type FakeGql {
+        #             field: Time!
+        #         }
 
-                """
-                The `Time` scalar type represents a Time value as
-                specified by
-                [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
-                """
-                scalar Time
-            '''
+        #         """
+        #         The `Time` scalar type represents a Time value as
+        #         specified by
+        #         [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+        #         """
+        #         scalar Time
+        #     '''
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_datetime_timedelta_field(self):
@@ -381,19 +381,19 @@ class TestTypeMappingPydantic2Graphene:
             }
         """
 
-        version_1_6 = pydantic.VERSION.startswith("1.6")
-        if version_1_6:
-            expected_value = '''
-                type FakeGql {
-                    field: EnumTest!
-                }
+        # version_1_6 = pydantic.VERSION.startswith("1.6")
+        # if version_1_6:
+        #     expected_value = '''
+        #         type FakeGql {
+        #             field: EnumTest!
+        #         }
 
-                """An enumeration."""
-                enum EnumTest {
-                    ONE
-                    TWO
-                }
-            '''
+        #         """An enumeration."""
+        #         enum EnumTest {
+        #             ONE
+        #             TWO
+        #         }
+        #     '''
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_int_enum_field(self, normalize_sdl):
@@ -413,19 +413,19 @@ class TestTypeMappingPydantic2Graphene:
             }
         """
 
-        version_1_6 = pydantic.VERSION.startswith("1.6")
-        if version_1_6:
-            expected_value = '''
-                type FakeGql {
-                    field: Enumer!
-                }
+        # version_1_6 = pydantic.VERSION.startswith("1.6")
+        # if version_1_6:
+        #     expected_value = '''
+        #         type FakeGql {
+        #             field: Enumer!
+        #         }
 
-                """An enumeration."""
-                enum Enumer {
-                    ONE
-                    TWO
-                }
-            '''
+        #         """An enumeration."""
+        #         enum Enumer {
+        #             ONE
+        #             TWO
+        #         }
+        #     '''
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_decimal_field(self, normalize_sdl):
@@ -506,24 +506,24 @@ class TestTypeMappingPydantic2Graphene:
             scalar JSONString
         """
 
-        version_1_6 = pydantic.VERSION.startswith("1.6")
-        if version_1_6:
-            expected_value = '''
-                type FakeGql {
-                    field: JSONString
-                }
+        # version_1_6 = pydantic.VERSION.startswith("1.6")
+        # if version_1_6:
+        #     expected_value = '''
+        #         type FakeGql {
+        #             field: JSONString
+        #         }
 
-                """
-                Allows use of a JSON String for input / output from the GraphQL
-                schema.
+        #         """
+        #         Allows use of a JSON String for input / output from the GraphQL
+        #         schema.
 
-                Use of this type is *not recommended* as you lose the benefits
-                of having a defined, static
-                schema (one of the key benefits of GraphQL).
-                """
-                scalar JSONString
-            '''
-            assert normalize_sdl(value) == normalize_sdl(expected_value)
+        #         Use of this type is *not recommended* as you lose the benefits
+        #         of having a defined, static
+        #         schema (one of the key benefits of GraphQL).
+        #         """
+        #         scalar JSONString
+        #     '''
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_pydantic_payment_card_number_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(

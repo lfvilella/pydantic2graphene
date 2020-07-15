@@ -48,34 +48,34 @@ class TestConvertingComplexModels:
             }
         """
 
-        version_1_6 = pydantic.VERSION.startswith("1.6")
-        if version_1_6:
-            expected_value = '''
-                type HumanGql {
-                    name: String!
-                    birthDate: DateTime!
-                    pets: [PetGql]
-                }
+        # version_1_6 = pydantic.VERSION.startswith("1.6")
+        # if version_1_6:
+        #     expected_value = '''
+        #         type HumanGql {
+        #             name: String!
+        #             birthDate: DateTime!
+        #             pets: [PetGql]
+        #         }
 
-                """
-                The `DateTime` scalar type represents a DateTime
-                value as specified by
-                [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
-                """
-                scalar DateTime
+        #         """
+        #         The `DateTime` scalar type represents a DateTime
+        #         value as specified by
+        #         [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+        #         """
+        #         scalar DateTime
 
-                type PetGql {
-                    name: String!
-                    specie: SpecieEnum!
-                }
+        #         type PetGql {
+        #             name: String!
+        #             specie: SpecieEnum!
+        #         }
 
-                """An enumeration."""
-                enum SpecieEnum {
-                    DOG
-                    CAT
-                    OTHER
-                }
-            '''
+        #         """An enumeration."""
+        #         enum SpecieEnum {
+        #             DOG
+        #             CAT
+        #             OTHER
+        #         }
+        #     '''
 
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
@@ -122,37 +122,37 @@ class TestConvertingComplexModels:
             }
         """
 
-        version_1_6 = pydantic.VERSION.startswith("1.6")
-        if version_1_6:
-            expected_value = '''
-                type HumanGql {
-                    name: String!
-                    birthDate: DateTime!
-                    pets: [PetGql]
-                }
+        # version_1_6 = pydantic.VERSION.startswith("1.6")
+        # if version_1_6:
+        #     expected_value = '''
+        #         type HumanGql {
+        #             name: String!
+        #             birthDate: DateTime!
+        #             pets: [PetGql]
+        #         }
 
-                """
-                The `DateTime` scalar type represents a DateTime
-                value as specified by
-                [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
-                """
-                scalar DateTime
+        #         """
+        #         The `DateTime` scalar type represents a DateTime
+        #         value as specified by
+        #         [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+        #         """
+        #         scalar DateTime
 
-                type PetGql {
-                    name: String!
-                    specie: SpecieEnum!
-                }
+        #         type PetGql {
+        #             name: String!
+        #             specie: SpecieEnum!
+        #         }
 
-                """An enumeration."""
-                enum SpecieEnum {
-                    DOG
-                    CAT
-                    OTHER
-                }
+        #         """An enumeration."""
+        #         enum SpecieEnum {
+        #             DOG
+        #             CAT
+        #             OTHER
+        #         }
 
-                input PetInputGql {
-                    name: String!
-                    specie: SpecieEnum!
-                }
-            '''
+        #         input PetInputGql {
+        #             name: String!
+        #             specie: SpecieEnum!
+        #         }
+        #     '''
         assert normalize_sdl(value) == normalize_sdl(expected_value)
