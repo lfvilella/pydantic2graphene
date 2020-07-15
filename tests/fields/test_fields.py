@@ -709,6 +709,38 @@ class TestTypeMappingPydantic2Graphene:
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
+    def test_pydantic_conset_int_field(self, normalize_sdl):
+        if float(pydantic.VERSION) < 1.6:
+            # AttributeError: module 'pydantic' has no attribute 'conset'
+            # Pydantic versions < 1.6 return error when using conset
+            return
+
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.conset(int, min_items=1, max_items=4))
+        )
+        expected_value = """
+            type FakeGql {
+                field: [Int!]!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    def test_pydantic_conset_str_field(self, normalize_sdl):
+        if float(pydantic.VERSION) < 1.6:
+            # AttributeError: module 'pydantic' has no attribute 'conset'
+            # Pydantic versions < 1.6 return error when using conset
+            return
+
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.conset(str, min_items=1, max_items=4))
+        )
+        expected_value = """
+            type FakeGql {
+                field: [String!]!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
     def test_pydantic_constr_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(
             to_pydantic_class(pydantic.constr())
