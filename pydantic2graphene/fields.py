@@ -51,7 +51,6 @@ def _get_type_mapping():
         pydantic.EmailStr: graphene.String,
         pydantic.NameEmail: graphene.String,
         pydantic.color.Color: graphene.String,
-        pydantic.Json: graphene.types.json.JSONString,
         pydantic.PaymentCardNumber: graphene.String,
         pydantic.AnyUrl: graphene.String,
         pydantic.AnyHttpUrl: graphene.String,
@@ -102,6 +101,13 @@ def _get_type_mapping():
         _TYPE_MAPPING[pydantic.EmailStr] = graphene.String
         _TYPE_MAPPING[pydantic.NameEmail] = graphene.String
     except ImportError:
+        pass
+
+    # graphene does not support JSONString on versions:
+    # ( 1.0>=, <=1.4.2 )
+    try:
+        _TYPE_MAPPING[pydantic.Json] = graphene.types.json.JSONString
+    except AttributeError:
         pass
 
     return _TYPE_MAPPING
