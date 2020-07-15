@@ -1,4 +1,4 @@
-# Check if the latest version of the external libs are working with the current code 
+# Check if the latest version of the external libs are working with the current code
 
 name: Dependency check
 
@@ -18,10 +18,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -29,6 +31,7 @@ jobs:
         cat requirements.txt | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
         # remove the requirement of requirements.txt
         tail -n +2 requirements-dev.txt | xargs -n1 pip install
+
     - name: Test with pytest
       run: |
         pytest

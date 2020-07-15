@@ -94,22 +94,36 @@ class TestTypeMappingPydantic2Graphene:
             return
 
         value = pydantic2graphene.to_graphene(to_pydantic_class(datetime.date))
-        expected_value = """
-            scalarDatetypeFakeGql {
+        expected_value = '''
+            type FakeGql {
                 field: Date!
             }
-        """
+
+            """
+            The `Date` scalar type represents a Date
+            value as specified by
+            [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+            """
+            scalar Date
+        '''
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_datetime_datetime_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(
             to_pydantic_class(datetime.datetime)
         )
-        expected_value = """
-            scalarDateTimetypeFakeGql {
+        expected_value = '''
+            type FakeGql {
                 field: DateTime!
             }
-        """
+
+            """
+            The `DateTime` scalar type represents a DateTime
+            value as specified by
+            [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+            """
+            scalar DateTime
+        '''
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_datetime_time_field(self, normalize_sdl):
@@ -120,11 +134,18 @@ class TestTypeMappingPydantic2Graphene:
             return
 
         value = pydantic2graphene.to_graphene(to_pydantic_class(datetime.time))
-        expected_value = """
+        expected_value = '''
             type FakeGql {
                 field: Time!
-            }scalarTime
-        """
+            }
+
+            """
+            The `Time` scalar type represents a Time value as
+            specified by
+            [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+            """
+            scalar Time
+        '''
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_datetime_timedelta_field(self):
@@ -319,16 +340,17 @@ class TestTypeMappingPydantic2Graphene:
             TWO = 2
 
         value = pydantic2graphene.to_graphene(to_pydantic_class(EnumTest))
-        expected_value = """
+        expected_value = '''
+            type FakeGql {
+                field: EnumTest!
+            }
+
+            """An enumeration."""
             enum EnumTest {
                 ONE
                 TWO
             }
-
-            type FakeGql {
-                field: EnumTest!
-            }
-        """
+        '''
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_int_enum_field(self, normalize_sdl):
@@ -337,16 +359,17 @@ class TestTypeMappingPydantic2Graphene:
             TWO = 2
 
         value = pydantic2graphene.to_graphene(to_pydantic_class(Enumer))
-        expected_value = """
+        expected_value = '''
+            type FakeGql {
+                field: Enumer!
+            }
+
+            """An enumeration."""
             enum Enumer {
                 ONE
                 TWO
             }
-
-            type FakeGql {
-                field: Enumer!
-            }
-        """
+        '''
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_decimal_field(self, normalize_sdl):
@@ -419,13 +442,19 @@ class TestTypeMappingPydantic2Graphene:
             return
 
         value = pydantic2graphene.to_graphene(to_pydantic_class(pydantic.Json))
-        expected_value = """
+        expected_value = '''
             type FakeGql {
                 field: JSONString
             }
 
+            """
+            Allows use of a JSON String for input / output from the GraphQL schema.
+
+            Use of this type is *not recommended* as you lose the benefits of having a defined, static
+            schema (one of the key benefits of GraphQL).
+            """
             scalar JSONString
-        """
+        '''
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_pydantic_payment_card_number_field(self, normalize_sdl):
