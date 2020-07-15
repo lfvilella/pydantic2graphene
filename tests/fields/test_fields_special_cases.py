@@ -71,6 +71,4 @@ class FakeConList(str):
 class TestPydanticConListFieldNotAvailable:
     def test_pydantic_conlist_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
-            pydantic2graphene.to_graphene(
-                to_pydantic_class(pydantic.conlist)
-            )
+            pydantic2graphene.to_graphene(to_pydantic_class(pydantic.conlist))

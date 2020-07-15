@@ -399,9 +399,7 @@ class TestTypeMappingPydantic2Graphene:
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_pydantic_json_field(self, normalize_sdl):
-        value = pydantic2graphene.to_graphene(
-            to_pydantic_class(pydantic.Json)
-        )
+        value = pydantic2graphene.to_graphene(to_pydantic_class(pydantic.Json))
         expected_value = """
             type FakeGql {
                 field: JSONString
@@ -479,7 +477,9 @@ class TestTypeMappingPydantic2Graphene:
 
     def test_pydantic_stricturl_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
-            pydantic2graphene.to_graphene(to_pydantic_class(pydantic.stricturl()))
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(pydantic.stricturl())
+            )
 
     def test_pydantic_uuid1_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(

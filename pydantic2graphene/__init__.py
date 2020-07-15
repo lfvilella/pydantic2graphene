@@ -19,7 +19,7 @@ __version__ = VERSION
 
 
 __all__ = (
-    '__version__',
+    "__version__",
     "to_graphene",
     "ConverterToGrapheneBase",
     "ToGrapheneOptions",
