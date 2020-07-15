@@ -710,7 +710,8 @@ class TestTypeMappingPydantic2Graphene:
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_pydantic_conset_int_field(self, normalize_sdl):
-        if float(pydantic.VERSION) < 1.6:
+        version_1_5 = pydantic.VERSION.startswith("1.5")
+        if version_1_5:
             # AttributeError: module 'pydantic' has no attribute 'conset'
             # Pydantic versions < 1.6 return error when using conset
             return
@@ -726,7 +727,8 @@ class TestTypeMappingPydantic2Graphene:
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_pydantic_conset_str_field(self, normalize_sdl):
-        if float(pydantic.VERSION) < 1.6:
+        version_1_5 = pydantic.VERSION.startswith("1.5")
+        if version_1_5:
             # AttributeError: module 'pydantic' has no attribute 'conset'
             # Pydantic versions < 1.6 return error when using conset
             return
