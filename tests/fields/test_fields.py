@@ -514,10 +514,12 @@ class TestTypeMappingPydantic2Graphene:
         #         }
 
         #         """
-        #         Allows use of a JSON String for input / output from the GraphQL
+        #         Allows use of a JSON String for input / output
+        #         from the GraphQL
         #         schema.
 
-        #         Use of this type is *not recommended* as you lose the benefits
+        #         Use of this type is *not recommended* as you
+        #         lose the benefits
         #         of having a defined, static
         #         schema (one of the key benefits of GraphQL).
         #         """
