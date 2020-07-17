@@ -74,6 +74,7 @@ jobs:
           pydantic==1.5 graphene==2.1.8 pytest==5.4.3,
           pydantic==1.4 graphene==2.1.8 pytest==5.4.3,
           pydantic==1.3 graphene==2.1.8 pytest==5.4.3,
+          pydantic==1.2 graphene==2.1.8 pytest==5.4.3,
         ]
 
     steps:
