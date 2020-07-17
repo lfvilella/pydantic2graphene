@@ -219,6 +219,7 @@ class TestTypeMappingPydantic2Graphene:
         not_supported = str(pydantic.VERSION)[:3] in {
             "1.3",
             "1.2",
+            "1.1",
         }
         if not_supported:
             with pytest.raises(pydantic2graphene.FieldNotSupported):
@@ -426,6 +427,7 @@ class TestTypeMappingPydantic2Graphene:
         }
         pydantic_not_supported = str(pydantic.VERSION)[:3] in {
             '1.2',
+            '1.1',
         }
         if graphene_not_suported or pydantic_not_supported:
             with pytest.raises(pydantic2graphene.FieldNotSupported):
@@ -729,6 +731,7 @@ class TestTypeMappingPydantic2Graphene:
             "1.4",
             "1.3",
             "1.2",
+            "1.1",
         }
         if not_implemented:
             # AttributeError: module 'pydantic' has no attribute 'conset'
@@ -751,6 +754,7 @@ class TestTypeMappingPydantic2Graphene:
             "1.4",
             "1.3",
             "1.2",
+            "1.1",
         }
         if not_implemented:
             # AttributeError: module 'pydantic' has no attribute 'conset'
