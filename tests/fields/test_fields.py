@@ -216,6 +216,12 @@ class TestTypeMappingPydantic2Graphene:
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_typing_iterable_field(self, normalize_sdl):
+        version_1_3 = str(pydantic.VERSION).startswith("1.3")
+        if version_1_3:
+            with pytest.raises(pydantic2graphene.FieldNotSupported):
+                pydantic2graphene.to_graphene(to_pydantic_class(typing.Type[str]))
+            return
+
         value = pydantic2graphene.to_graphene(
             to_pydantic_class(typing.Iterable[str])
         )
@@ -710,8 +716,8 @@ class TestTypeMappingPydantic2Graphene:
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_pydantic_conset_int_field(self, normalize_sdl):
-        version_1_5 = pydantic.VERSION.startswith("1.5")
-        if version_1_5:
+        not_implemented = str(pydantic.VERSION)[:3] in {"1.5", "1.4", "1.3"}
+        if not_implemented:
             # AttributeError: module 'pydantic' has no attribute 'conset'
             # Pydantic versions < 1.6 return error when using conset
             return
@@ -727,8 +733,8 @@ class TestTypeMappingPydantic2Graphene:
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_pydantic_conset_str_field(self, normalize_sdl):
-        version_1_5 = pydantic.VERSION.startswith("1.5")
-        if version_1_5:
+        not_implemented = str(pydantic.VERSION)[:3] in {"1.5", "1.4", "1.3"}
+        if not_implemented:
             # AttributeError: module 'pydantic' has no attribute 'conset'
             # Pydantic versions < 1.6 return error when using conset
             return

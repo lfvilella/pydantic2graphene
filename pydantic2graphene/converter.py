@@ -34,7 +34,7 @@ class ToGrapheneOptions(pydantic.BaseModel):
 
     extra_fields: typing.Mapping[str, types.GrapheneField] = {}
 
-    exclude_fields: typing.Set[str] = pydantic.Field(default_factory=set)
+    exclude_fields: typing.Set[str] = set()
 
     class_name: str = None
 
