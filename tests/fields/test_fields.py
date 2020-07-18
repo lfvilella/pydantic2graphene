@@ -20,16 +20,6 @@ def to_pydantic_class(field_type):
 
 
 class TestTypeMappingPydantic2Graphene:
-
-    def test_boolean_field(self, normalize_sdl):
-        value = pydantic2graphene.to_graphene(to_pydantic_class(bool))
-        expected_value = """
-            type FakeGql {
-                field: Boolean!
-            }
-        """
-        assert normalize_sdl(value) == normalize_sdl(expected_value)
-
     def test_bytes_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(to_pydantic_class(bytes))
         expected_value = """
