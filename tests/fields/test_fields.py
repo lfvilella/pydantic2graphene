@@ -20,7 +20,6 @@ def to_pydantic_class(field_type):
 
 
 class TestTypeMappingPydantic2Graphene:
-
     def test_float_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(to_pydantic_class(float))
         expected_value = """

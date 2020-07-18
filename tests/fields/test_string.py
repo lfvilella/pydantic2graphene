@@ -19,18 +19,11 @@ def test_schema_declaration(normalize_sdl):
     assert normalize_sdl(value) == normalize_sdl(expected_value)
 
 
-def test_query_usage():
+def test_query_usage(simple_query_schema):
     MyModelGql = pydantic2graphene.to_graphene(MyModel)
-
-    class Query(graphene.ObjectType):
-        hello = graphene.Field(MyModelGql)
-
-        @staticmethod
-        def resolve_hello(parent, info):
-            return MyModel(field1="lets", field2="rock")
-
-    schema = graphene.Schema(query=Query)
-
+    schema = simple_query_schema(
+        MyModelGql, MyModel(field1="lets", field2="rock")
+    )
     query = """
     query {
         hello {
@@ -39,26 +32,21 @@ def test_query_usage():
         }
     }
     """
-    value = schema.execute(query).to_dict()
-    expected_value = {"data": {"hello": {"f1": "lets", "field2": "rock"}}}
+    value = schema.execute(query).data
+    expected_value = {"hello": {"f1": "lets", "field2": "rock"}}
 
     assert value == expected_value
 
 
-def test_input_usage():
+def test_input_usage(input_query_schema):
     MyModelGql = pydantic2graphene.to_graphene(MyModel)
     MyModelInputGql = pydantic2graphene.to_graphene(
         MyModel, graphene.InputObjectType
     )
 
-    class Query(graphene.ObjectType):
-        hello = graphene.Field(MyModelGql, inp=MyModelInputGql())
-
-        @staticmethod
-        def resolve_hello(parent, info, inp):
-            return inp
-
-    schema = graphene.Schema(query=Query)
+    schema = input_query_schema(
+        MyModelGql, MyModelInputGql(), resolve_model=MyModel
+    )
 
     query = """
     query {
@@ -73,12 +61,10 @@ def test_input_usage():
         }
     }
     """
-    value = schema.execute(query).to_dict()
+    value = schema.execute(query).data
     expected_value = {
-        "data": {
-            "h1": {"f1": "123", "f2": "abc"},
-            "h2": {"field1": "go", "field2": "python"},
-        }
+        "h1": {"f1": "123", "f2": "abc"},
+        "h2": {"field1": "go", "field2": "python"},
     }
 
     assert value == expected_value
