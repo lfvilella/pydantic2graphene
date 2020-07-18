@@ -427,9 +427,9 @@ class TestTypeMappingPydantic2Graphene:
             "1.0",
         }
         pydantic_not_supported = str(pydantic.VERSION)[:3] in {
-            '1.2',
-            '1.1',
-            '1.0',
+            "1.2",
+            "1.1",
+            "1.0",
         }
         if graphene_not_suported or pydantic_not_supported:
             with pytest.raises(pydantic2graphene.FieldNotSupported):

@@ -1,4 +1,3 @@
-import collections
 import datetime
 import unittest.mock
 
@@ -14,21 +13,26 @@ def to_pydantic_class(field_type):
     return Fake
 
 
-@unittest.mock.patch(
-    "graphene.types.datetime",
-    collections.namedtuple("fake_module", "DateTime")(None),
-)
 class TestDatetimeNotImplemented:
-    def test_datetime_date_field_old_version(self):
-        # graphene.types.datetime.Date is not present in the module
-        with pytest.raises(pydantic2graphene.FieldNotSupported):
-            pydantic2graphene.fields._TYPE_MAPPING = None
-            pydantic2graphene.to_graphene(to_pydantic_class(datetime.date))
+    def test_datetime_date_field_old_version(self, module_wrapper):
+        import graphene.types.datetime
 
-    def test_datetime_time_field(self):
-        with pytest.raises(pydantic2graphene.FieldNotSupported):
-            pydantic2graphene.fields._TYPE_MAPPING = None
-            pydantic2graphene.to_graphene(to_pydantic_class(datetime.time))
+        fake_module = module_wrapper(graphene.types.datetime, exclude=["Date"])
+        with unittest.mock.patch("graphene.types.datetime", fake_module):
+            # graphene.types.datetime.Date is not present in the module
+            with pytest.raises(pydantic2graphene.FieldNotSupported):
+                pydantic2graphene.fields._TYPE_MAPPING = None
+                pydantic2graphene.to_graphene(to_pydantic_class(datetime.date))
+
+    def test_datetime_time_field(self, module_wrapper):
+        import graphene.types.datetime
+
+        fake_module = module_wrapper(graphene.types.datetime, exclude=["Time"])
+        with unittest.mock.patch("graphene.types.datetime", fake_module):
+            # graphene.types.datetime.Time is not present in the module
+            with pytest.raises(pydantic2graphene.FieldNotSupported):
+                pydantic2graphene.fields._TYPE_MAPPING = None
+                pydantic2graphene.to_graphene(to_pydantic_class(datetime.time))
 
 
 class FakeEmailStr(str):
@@ -63,12 +67,16 @@ class TestPydanticEmailFieldNotAvailable:
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
 
-class FakeConList(str):
-    pass
+class TestPydanticIterableShapeNotAvailable:
+    def test_do_not_raise_attribute_error(self, module_wrapper):
+        import pydantic.fields
+        import pydantic2graphene.fields
 
+        fake_module = module_wrapper(
+            pydantic.fields, exclude=["SHAPE_ITERABLE"]
+        )
+        with unittest.mock.patch("pydantic.fields", fake_module):
+            pydantic2graphene.fields._LIST_SHAPES = None
+            pydantic2graphene.fields.is_list_shape(None)
 
-@unittest.mock.patch("pydantic.conlist", FakeConList)
-class TestPydanticConListFieldNotAvailable:
-    def test_pydantic_conlist_field(self):
-        with pytest.raises(pydantic2graphene.FieldNotSupported):
-            pydantic2graphene.to_graphene(to_pydantic_class(pydantic.conlist))
+        assert fake_module.exceptions["SHAPE_ITERABLE"] == 1

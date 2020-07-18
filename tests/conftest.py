@@ -1,3 +1,4 @@
+import collections
 import typing
 import pytest
 import graphene
@@ -56,3 +57,32 @@ def normalize_sdl(get_sdl):
         return "".join(get_sdl(sdl).split())
 
     return _normalize
+
+
+@pytest.fixture
+def module_wrapper():
+    class ModuleWrapper:
+        def __init__(self, module, exclude=None, force_exception=None):
+            self.module = module
+            self.exclude = set(exclude or [])
+            self.called_count = collections.Counter()
+            self.exceptions = collections.Counter()
+            self.force_exception = force_exception or {}
+
+        def __getattribute__(self, attr):
+            _self = super().__getattribute__("__dict__")
+            if attr in _self:
+                return _self[attr]
+
+            _self["called_count"][attr] += 1
+            if attr in _self["exclude"]:
+                _self["exceptions"][attr] += 1
+                raise AttributeError
+
+            if attr in _self["force_exception"]:
+                _self["exceptions"][attr] += 1
+                raise _self["force_exception"][attr]
+
+            return getattr(_self["module"], attr)
+
+    return ModuleWrapper
