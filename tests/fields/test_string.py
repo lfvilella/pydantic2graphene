@@ -52,22 +52,22 @@ def test_input_usage():
     )
 
     class Query(graphene.ObjectType):
-        hello = graphene.Field(MyModelGql, imp=MyModelInputGql())
+        hello = graphene.Field(MyModelGql, inp=MyModelInputGql())
 
         @staticmethod
-        def resolve_hello(parent, info, imp):
-            return imp
+        def resolve_hello(parent, info, inp):
+            return inp
 
     schema = graphene.Schema(query=Query)
 
     query = """
     query {
-        h1: hello (imp: {field1: "123"}) {
+        h1: hello (inp: {field1: "123"}) {
             f1: field1
             f2: field2
         }
 
-        h2: hello (imp: {field1: "go", field2: "python"}) {
+        h2: hello (inp: {field1: "go", field2: "python"}) {
             field1
             field2
         }
