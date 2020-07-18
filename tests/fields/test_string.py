@@ -8,10 +8,36 @@ class MyModel(pydantic.BaseModel):
     field2: str = "abc"
 
 
-def test_schema_declaration(normalize_sdl):
+def test_schema_type_declaration(normalize_sdl):
     value = pydantic2graphene.to_graphene(MyModel)
     expected_value = """
         type MyModelGql {
+            field1: String!
+            field2: String
+        }
+    """
+    assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+
+def test_schema_input_declaration(normalize_sdl):
+    value = pydantic2graphene.to_graphene(MyModel, graphene.InputObjectType)
+    expected_value = """
+        input MyModelInputGql {
+            field1: String!
+            field2: String="abc"
+        }
+    """
+    assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+
+def test_schema_interface_declaration(normalize_sdl):
+    value = pydantic2graphene.to_graphene(MyModel, graphene.Interface)
+    expected_value = """
+        interface MyModelInterfaceGql {
+            field1: String!
+            field2: String
+        }
+        type Query implements MyModelInterfaceGql {
             field1: String!
             field2: String
         }
