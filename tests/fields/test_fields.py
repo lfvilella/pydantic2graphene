@@ -21,15 +21,6 @@ def to_pydantic_class(field_type):
 
 class TestTypeMappingPydantic2Graphene:
 
-    def test_int_field(self, normalize_sdl):
-        value = pydantic2graphene.to_graphene(to_pydantic_class(int))
-        expected_value = """
-            type FakeGql {
-                field: Int!
-            }
-        """
-        assert normalize_sdl(value) == normalize_sdl(expected_value)
-
     def test_float_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(to_pydantic_class(float))
         expected_value = """
