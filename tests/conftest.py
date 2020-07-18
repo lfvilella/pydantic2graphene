@@ -61,28 +61,36 @@ def normalize_sdl(get_sdl):
 
 @pytest.fixture
 def module_wrapper():
-    class ModuleWrapper:
+    class WrapperState:
         def __init__(self, module, exclude=None, force_exception=None):
             self.module = module
             self.exclude = set(exclude or [])
-            self.called_count = collections.Counter()
-            self.exceptions = collections.Counter()
+            self.called_counter = collections.Counter()
+            self.exceptions_counter = collections.Counter()
             self.force_exception = force_exception or {}
+
+    class ModuleWrapper:
+        def __init__(self, module, exclude=None, force_exception=None):
+            self.wrapper_local_state = WrapperState(
+                module, exclude, force_exception
+            )
 
         def __getattribute__(self, attr):
             _self = super().__getattribute__("__dict__")
             if attr in _self:
                 return _self[attr]
 
-            _self["called_count"][attr] += 1
-            if attr in _self["exclude"]:
-                _self["exceptions"][attr] += 1
+            _local_state = _self["wrapper_local_state"]
+
+            _local_state.called_counter[attr] += 1
+            if attr in _local_state.exclude:
+                _local_state.exceptions_counter[attr] += 1
                 raise AttributeError
 
-            if attr in _self["force_exception"]:
-                _self["exceptions"][attr] += 1
-                raise _self["force_exception"][attr]
+            if attr in _local_state.force_exception:
+                _local_state.exceptions_counter[attr] += 1
+                raise _local_state.force_exception[attr]
 
-            return getattr(_self["module"], attr)
+            return getattr(_local_state.module, attr)
 
     return ModuleWrapper

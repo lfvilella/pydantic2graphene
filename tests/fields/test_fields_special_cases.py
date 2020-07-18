@@ -79,4 +79,9 @@ class TestPydanticIterableShapeNotAvailable:
             pydantic2graphene.fields._LIST_SHAPES = None
             pydantic2graphene.fields.is_list_shape(None)
 
-        assert fake_module.exceptions["SHAPE_ITERABLE"] == 1
+        assert (
+            fake_module.wrapper_local_state.exceptions_counter[
+                "SHAPE_ITERABLE"
+            ]
+            == 1
+        )
