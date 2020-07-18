@@ -14,15 +14,32 @@ _NOT_SUPPORTED_SHAPES = {
     pydantic.fields.SHAPE_MAPPING,
 }
 
-_LIST_SHAPES = {
-    pydantic.fields.SHAPE_LIST,
-    pydantic.fields.SHAPE_TUPLE,
-    pydantic.fields.SHAPE_TUPLE_ELLIPSIS,
-    pydantic.fields.SHAPE_SEQUENCE,
-    pydantic.fields.SHAPE_SET,
-    pydantic.fields.SHAPE_FROZENSET,
-    pydantic.fields.SHAPE_ITERABLE,
-}
+
+_LIST_SHAPES = None
+
+
+def _get_list_shapes():
+    global _LIST_SHAPES
+    if _LIST_SHAPES:
+        return _LIST_SHAPES
+
+    _LIST_SHAPES = {
+        pydantic.fields.SHAPE_LIST,
+        pydantic.fields.SHAPE_TUPLE,
+        pydantic.fields.SHAPE_TUPLE_ELLIPSIS,
+        pydantic.fields.SHAPE_SEQUENCE,
+        pydantic.fields.SHAPE_SET,
+        pydantic.fields.SHAPE_FROZENSET,
+    }
+
+    # pydantic pydantic<=1.3 does not have SHAPE_ITERABLE
+    try:
+        _LIST_SHAPES.add(pydantic.fields.SHAPE_ITERABLE)
+    except AttributeError:
+        pass
+
+    return _LIST_SHAPES
+
 
 _TYPE_MAPPING = None
 
@@ -155,7 +172,7 @@ def is_enum_type(type_) -> bool:
 
 
 def is_list_shape(shape) -> bool:
-    return shape in _LIST_SHAPES
+    return shape in _get_list_shapes()
 
 
 def is_not_supported_shape(shape) -> bool:

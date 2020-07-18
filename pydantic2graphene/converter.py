@@ -34,7 +34,7 @@ class ToGrapheneOptions(pydantic.BaseModel):
 
     extra_fields: typing.Mapping[str, types.GrapheneField] = {}
 
-    exclude_fields: typing.Set[str] = pydantic.Field(default_factory=set)
+    exclude_fields: typing.Set[str] = set()
 
     class_name: str = None
 
@@ -140,11 +140,11 @@ class ToGraphene:
         if fields.is_pydantic_base_model(type_):
             return ToGraphene(type_).convert()
 
-        field_outer = fields.get_grapehene_field_by_type(
-            pydantic_field.outer_type_
-        )
-        if field_outer:
-            return field_outer
+        outer_type_ = getattr(pydantic_field, "outer_type_", None)
+        if outer_type_:
+            field_outer = fields.get_grapehene_field_by_type(outer_type_)
+            if field_outer:
+                return field_outer
 
     def _get_graphene_field(self, pydantic_field: pydantic.fields.ModelField):
         args = {
