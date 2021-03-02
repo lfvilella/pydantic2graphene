@@ -145,12 +145,6 @@ _ENUM_TYPE = (
 )
 
 
-def _extract_pydantic_base_type(type_):
-    for super_class in type_.mro():
-        if "pydantic.types." in repr(super_class):
-            yield super_class
-
-
 def get_grapehene_field_by_type(type_):
     mapping = _get_type_mapping()
 
@@ -158,7 +152,7 @@ def get_grapehene_field_by_type(type_):
         return mapping[type_]
 
     if inspect.isclass(type_):
-        for pydantic_type in _extract_pydantic_base_type(type_):
+        for pydantic_type in type_.mro():
             if pydantic_type in mapping:
                 return mapping[pydantic_type]
 
