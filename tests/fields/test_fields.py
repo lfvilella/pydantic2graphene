@@ -476,11 +476,16 @@ class TestTypeMappingPydantic2Graphene:
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
-    def test_pydantic_stricturl_field(self):
-        with pytest.raises(pydantic2graphene.FieldNotSupported):
-            pydantic2graphene.to_graphene(
-                to_pydantic_class(pydantic.stricturl())
-            )
+    def test_pydantic_stricturl_field(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(pydantic.stricturl())
+        )
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_pydantic_uuid1_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(
@@ -748,4 +753,26 @@ class TestTypeMappingPydantic2Graphene:
                 field: String!
             }
         """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+    @pytest.mark.parametrize('base_type, graphene_type_name', (
+        (str, 'String'),
+        (int, 'Int'),
+        (float, 'Float'),
+        (decimal.Decimal, 'Float'),
+        (bytes, 'String'),
+    ))
+    def test_subclass_of_supported_fields(self, normalize_sdl, base_type,
+                                          graphene_type_name):
+        class MyCustomSubclass(base_type):
+            pass
+
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(MyCustomSubclass)
+        )
+        expected_value = """
+            type FakeGql {
+                field: %s!
+            }
+        """ % graphene_type_name
         assert normalize_sdl(value) == normalize_sdl(expected_value)

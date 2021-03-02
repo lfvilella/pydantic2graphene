@@ -37,10 +37,6 @@ def test_schema_interface_declaration(normalize_sdl):
             field1: Float!
             field2: Float
         }
-        type Query implements MyModelInterfaceGql {
-            field1: Float!
-            field2: Float
-        }
     """
     assert normalize_sdl(value) == normalize_sdl(expected_value)
 
