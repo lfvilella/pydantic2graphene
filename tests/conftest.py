@@ -4,10 +4,9 @@ import pytest
 import graphene
 
 
-
 def _get_object_type_sdl(obj):
     sdl = str(graphene.Schema(types=[obj]))
-    return sdl.split("}", 1)[1].strip()
+    return sdl.split('}', 1)[1].strip()
 
 
 def obj_to_sdl(
@@ -18,10 +17,13 @@ def obj_to_sdl(
     if isinstance(obj, str):
         return obj
 
-    if issubclass(obj, (graphene.ObjectType, graphene.InputObjectType, graphene.Interface)):
+    if issubclass(
+        obj,
+        (graphene.ObjectType, graphene.InputObjectType, graphene.Interface),
+    ):
         return _get_object_type_sdl(obj)
 
-    raise ValueError("Invalid Schema Definition Language (SDL) type")
+    raise ValueError('Invalid Schema Definition Language (SDL) type')
 
 
 @pytest.fixture
@@ -32,7 +34,7 @@ def get_sdl():
 @pytest.fixture
 def normalize_sdl(get_sdl):
     def _normalize(sdl):
-        return "".join(get_sdl(sdl).split())
+        return ''.join(get_sdl(sdl).split())
 
     return _normalize
 
@@ -54,11 +56,11 @@ def module_wrapper():
             )
 
         def __getattribute__(self, attr):
-            _self = super().__getattribute__("__dict__")
+            _self = super().__getattribute__('__dict__')
             if attr in _self:
                 return _self[attr]
 
-            _local_state = _self["wrapper_local_state"]
+            _local_state = _self['wrapper_local_state']
 
             _local_state.called_counter[attr] += 1
             if attr in _local_state.exclude:

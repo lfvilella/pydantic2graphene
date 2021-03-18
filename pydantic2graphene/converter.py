@@ -16,7 +16,7 @@ def _get_pydantic_class_name(pydantic_model: pydantic.BaseModel) -> str:
     >>> str(Human)
     "<class 'api.Human'>"
     """
-    return str(pydantic_model).split("'")[1].split(".")[-1]
+    return str(pydantic_model).split("'")[1].split('.')[-1]
 
 
 def _get_pydantic_fields(
@@ -40,7 +40,7 @@ class ToGrapheneOptions(pydantic.BaseModel):
 
     use_cache: bool = True
 
-    @pydantic.validator("extra_fields")
+    @pydantic.validator('extra_fields')
     def validate_extra_fields(cls, value):
         if not value:
             return value
@@ -94,12 +94,12 @@ class ToGraphene:
         _name = _get_pydantic_class_name(self.pydantic_model)
 
         if issubclass(self.graphene_type, graphene.InputObjectType):
-            return f"{_name}InputGql"
+            return f'{_name}InputGql'
 
         if issubclass(self.graphene_type, graphene.Interface):
-            return f"{_name}InterfaceGql"
+            return f'{_name}InterfaceGql'
 
-        return f"{_name}Gql"
+        return f'{_name}Gql'
 
     def _convert_to_graphene_field(
         self, pydantic_field: pydantic.fields.ModelField
@@ -109,13 +109,13 @@ class ToGraphene:
             raise errors.FieldNotSupported(pydantic_field.name)
 
         type_ = pydantic_field.type_
-        type_args = getattr(type_, "__args__", [])
+        type_args = getattr(type_, '__args__', [])
 
         if fields.is_list_shape(shape) and len(type_args):
             type_ = type_args[0]
             if len(type_args) > 1:
                 logging.warn(
-                    "%s, has multiple only the first type was used",
+                    '%s, has multiple only the first type was used',
                     pydantic_field.name,
                 )
 
@@ -129,7 +129,11 @@ class ToGraphene:
             return graphene_enum
 
         if fields.is_pydantic_base_model(type_):
-            obj_type = self.graphene_type if self.graphene_type == graphene.InputObjectType else graphene.ObjectType
+            obj_type = (
+                self.graphene_type
+                if self.graphene_type == graphene.InputObjectType
+                else graphene.ObjectType
+            )
             return ToGraphene(type_, obj_type).convert()
 
         field = fields.get_grapehene_field_by_type(type_)
@@ -138,10 +142,10 @@ class ToGraphene:
 
         if fields.is_field_not_allowed_type(type_):
             raise errors.InvalidListType(
-                "Lists must be type, e.g typing.List[int]"
+                'Lists must be type, e.g typing.List[int]'
             )
 
-        outer_type_ = getattr(pydantic_field, "outer_type_", None)
+        outer_type_ = getattr(pydantic_field, 'outer_type_', None)
         if outer_type_:
             field_outer = fields.get_grapehene_field_by_type(outer_type_)
             if field_outer:
@@ -149,8 +153,8 @@ class ToGraphene:
 
     def _get_graphene_field(self, pydantic_field: pydantic.fields.ModelField):
         args = {
-            "required": pydantic_field.required,
-            "default_value": pydantic_field.default,
+            'required': pydantic_field.required,
+            'default_value': pydantic_field.default,
         }
         field = self._convert_to_graphene_field(pydantic_field)
         if not field:
