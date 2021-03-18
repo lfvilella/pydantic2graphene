@@ -37,6 +37,10 @@ def test_schema_interface_declaration(normalize_sdl):
             field1: Int!
             field2: Int
         }
+        type Query implements MyModelInterfaceGql {
+            field1: Int!
+            field2: Int
+        }
     """
     assert normalize_sdl(value) == normalize_sdl(expected_value)
 

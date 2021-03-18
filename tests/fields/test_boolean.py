@@ -41,6 +41,11 @@ def test_schema_interface_declaration(normalize_sdl):
             field2: Boolean
             field3: Boolean
         }
+        type Query implements MyModelInterfaceGql {
+            field1: Boolean!
+            field2: Boolean
+            field3: Boolean
+        }
     """
     assert normalize_sdl(value) == normalize_sdl(expected_value)
 

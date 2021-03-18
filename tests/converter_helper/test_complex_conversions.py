@@ -49,54 +49,6 @@ class TestConvertingComplexModels:
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
-    def test_returns_input_object_type_schema(self, normalize_sdl):
-        value = pydantic2graphene.to_graphene(Human, graphene.InputObjectType)
-        expected_value = """
-            scalar DateTime
-
-            input HumanInputGql {
-                name: String!
-                birthDate: DateTime!
-                pets: [PetInputGql] = []
-            }
-
-            input PetInputGql {
-                name: String!
-                specie: SpecieEnum!
-            }
-
-            enum SpecieEnum {
-                DOG
-                CAT
-                OTHER
-            }
-        """
-        assert normalize_sdl(value) == normalize_sdl(expected_value)
-
-    def test_returns_interface_object_type_schema(self, normalize_sdl):
-        value = pydantic2graphene.to_graphene(Human, graphene.Interface)
-        expected_value = """
-            scalar DateTime
-
-            interface HumanInterfaceGql {
-                name: String!
-                birthDate: DateTime!
-                pets: [PetGql]
-            }
-
-            type PetGql {
-                name: String!
-                specie: SpecieEnum!
-            }
-
-            enum SpecieEnum {
-                DOG
-                CAT
-                OTHER
-            }
-        """
-        assert normalize_sdl(value) == normalize_sdl(expected_value)
-
     def test_create_query_schema(self, normalize_sdl):
         HumanGql = pydantic2graphene.to_graphene(Human)
         PetGql = pydantic2graphene.to_graphene(Pet)
