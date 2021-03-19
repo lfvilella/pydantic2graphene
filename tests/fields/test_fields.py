@@ -146,6 +146,12 @@ class TestTypeMappingPydantic2Graphene:
                 to_pydantic_class(typing.Dict[str, str])
             )
 
+    def test_typing_defaultdict_field(self):
+        with pytest.raises(pydantic2graphene.FieldNotSupported):
+            pydantic2graphene.to_graphene(
+                to_pydantic_class(typing.DefaultDict[str, str])
+            )
+
     def test_typing_set_field(self, normalize_sdl):
         value = pydantic2graphene.to_graphene(
             to_pydantic_class(typing.Set[str])
