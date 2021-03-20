@@ -140,11 +140,27 @@ class TestTypeMappingPydantic2Graphene:
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
-    def test_typing_dict_field(self):
-        with pytest.raises(pydantic2graphene.FieldNotSupported):
-            pydantic2graphene.to_graphene(
-                to_pydantic_class(typing.Dict[str, str])
-            )
+    def test_typing_dict_field(self, normalize_sdl):
+        supported = str(pydantic.VERSION)[:3] in {
+            "1.8.1",
+            "1.8",
+        }
+        if not supported:
+            with pytest.raises(pydantic2graphene.FieldNotSupported):
+                pydantic2graphene.to_graphene(
+                    to_pydantic_class(typing.Dict[str, str])
+                )
+            return
+
+        value = pydantic2graphene.to_graphene(
+            to_pydantic_class(typing.Dict[str, str])
+        )
+        expected_value = '''
+            type FakeGql {
+                field: String!
+            }
+        '''
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_typing_defaultdict_field(self):
         with pytest.raises(pydantic2graphene.FieldNotSupported):
