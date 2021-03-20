@@ -1,6 +1,6 @@
 # pydantic2graphene
 
-[![CI](https://github.com/lfvilella/pydantic2graphene/workflows/CI/badge.svg?event=push)](https://github.com/lfvilella/pydantic2graphene/actions?query=event%3Apush+branch%3Amaster+workflow%3ACI)
+[![CI](https://github.com/lfvilella/pydantic2graphene/workflows/CI/badge.svg?event=schedule)](https://github.com/lfvilella/pydantic2graphene/actions?query=event%3Apush+branch%3Amaster+workflow%3ACI)
 [![Coverage](https://codecov.io/gh/lfvilella/pydantic2graphene/branch/master/graph/badge.svg)](https://codecov.io/gh/lfvilella/pydantic2graphene)
 [![pypi](https://img.shields.io/pypi/v/pydantic2graphene.svg)](https://pypi.python.org/pypi/pydantic2graphene)
 [![versions](https://img.shields.io/pypi/pyversions/pydantic2graphene.svg)](https://github.com/lfvilella/pydantic2graphene)
@@ -42,3 +42,5 @@ UserGql = UserConverter.as_class()  # graphene.ObjectType
 UserInputGql = UserConverter.as_class(graphene.InputObjectType)
 UserInterfaceGql = UserConverter.as_class(graphene.Interface)
 ```
+
+[More Examples](https://github.com/lfvilella/pydantic2graphene/tree/master/docs/examples)
