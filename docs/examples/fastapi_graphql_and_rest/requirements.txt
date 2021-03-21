@@ -1,6 +1,6 @@
 fastapi==0.59.0
-pydantic==1.6.1
+pydantic==1.8.1
 starlette==0.13.4
 uvicorn==0.11.7
 graphene==2.1.8
-pydantic2graphene==0.3.1
+pydantic2graphene==0.4

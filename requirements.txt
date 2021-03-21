@@ -1,2 +1,2 @@
 graphene>=1.1,<=2.1.8
-pydantic>=1.0,<=1.6.1
+pydantic>=1.0,<=1.8.1
