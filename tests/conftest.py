@@ -2,6 +2,7 @@ import collections
 import typing
 import pytest
 import graphene
+import re
 
 
 def _get_type_sdl(obj):
@@ -14,7 +15,7 @@ def _get_input_sdl(obj):
         foo = graphene.String(node=obj())
 
     sdl = str(graphene.Schema(query=Query))
-    return sdl.split("}", 1)[1].split("type")[0].strip()
+    return re.sub('type Query[^}]*}', '', sdl.split("}", 1)[1].strip())
 
 
 def _get_interface_sdl(obj):
@@ -23,7 +24,7 @@ def _get_interface_sdl(obj):
             interfaces = (obj,)
 
     sdl = str(graphene.Schema(query=Query))
-    return sdl.split("}", 1)[1].strip()
+    return re.sub('type Query[^}]*}', '', sdl.split("}", 1)[1].strip())
 
 
 def obj_to_sdl(

@@ -119,15 +119,6 @@ class ToGraphene:
                     pydantic_field.name,
                 )
 
-        field = fields.get_grapehene_field_by_type(type_)
-        if field:
-            return field
-
-        if fields.is_field_not_allowed_type(type_):
-            raise errors.InvalidListType(
-                "Lists must be type, e.g typing.List[int]"
-            )
-
         if fields.is_enum_type(type_):
             cache_key, cached_obj = self._get_from_cache(type_, graphene.Enum)
             if cached_obj:
@@ -138,7 +129,21 @@ class ToGraphene:
             return graphene_enum
 
         if fields.is_pydantic_base_model(type_):
-            return ToGraphene(type_).convert()
+            if self.graphene_type == graphene.InputObjectType:
+                obj_type = self.graphene_type
+            else:
+                obj_type = graphene.ObjectType
+
+            return ToGraphene(type_, obj_type).convert()
+
+        field = fields.get_grapehene_field_by_type(type_)
+        if field:
+            return field
+
+        if fields.is_field_not_allowed_type(type_):
+            raise errors.InvalidListType(
+                "Lists must be type, e.g typing.List[int]"
+            )
 
         outer_type_ = getattr(pydantic_field, "outer_type_", None)
         if outer_type_:

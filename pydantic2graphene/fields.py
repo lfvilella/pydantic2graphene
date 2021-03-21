@@ -10,9 +10,27 @@ import graphene
 import graphene.types.datetime
 import pydantic.fields
 
-_NOT_SUPPORTED_SHAPES = {
-    pydantic.fields.SHAPE_MAPPING,
-}
+
+_NOT_SUPPORTED_SHAPES = None
+
+
+def _get_not_supported_shapes():
+    global _NOT_SUPPORTED_SHAPES
+    if _NOT_SUPPORTED_SHAPES:
+        return _NOT_SUPPORTED_SHAPES
+
+    _NOT_SUPPORTED_SHAPES = {
+        pydantic.fields.SHAPE_MAPPING,
+    }
+
+    # pydantic pydantic<=1.8 does not have SHAPE_DICT and SHAPE_DEFAULTDICT
+    try:
+        _NOT_SUPPORTED_SHAPES.add(pydantic.fields.SHAPE_DICT)
+        _NOT_SUPPORTED_SHAPES.add(pydantic.fields.SHAPE_DEFAULTDICT)
+    except AttributeError:
+        pass
+
+    return _NOT_SUPPORTED_SHAPES
 
 
 _LIST_SHAPES = None
@@ -145,12 +163,6 @@ _ENUM_TYPE = (
 )
 
 
-def _extract_pydantic_base_type(type_):
-    for super_class in type_.mro():
-        if "pydantic.types." in repr(super_class):
-            yield super_class
-
-
 def get_grapehene_field_by_type(type_):
     mapping = _get_type_mapping()
 
@@ -158,7 +170,7 @@ def get_grapehene_field_by_type(type_):
         return mapping[type_]
 
     if inspect.isclass(type_):
-        for pydantic_type in _extract_pydantic_base_type(type_):
+        for pydantic_type in type_.mro():
             if pydantic_type in mapping:
                 return mapping[pydantic_type]
 
@@ -176,7 +188,7 @@ def is_list_shape(shape) -> bool:
 
 
 def is_not_supported_shape(shape) -> bool:
-    return shape in _NOT_SUPPORTED_SHAPES
+    return shape in _get_not_supported_shapes()
 
 
 def is_pydantic_base_model(type_) -> bool:
