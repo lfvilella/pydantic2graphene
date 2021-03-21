@@ -19,7 +19,7 @@ version = re.search(r"v\d+(\.\d+)+", version_txt).group()
 
 requirements = [
     "graphene>=1.1,<=2.1.8",
-    "pydantic>=1.0,<=1.6.1",
+    "pydantic>=1.0,<=1.8.1",
 ]
 
 github_url = "https://github.com/lfvilella/pydantic2graphene"
@@ -38,6 +38,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Intended Audience :: Developers",
         "Intended Audience :: Information Technology",
         "License :: OSI Approved :: MIT License",
@@ -56,6 +57,6 @@ setuptools.setup(
     license="MIT",
     packages=["pydantic2graphene"],
     package_data={"pydantic2graphene": ["py.typed"]},
-    python_requires=">=3.6,<3.9",
+    python_requires=">=3.6,<=3.9",
     install_requires=requirements,
 )
