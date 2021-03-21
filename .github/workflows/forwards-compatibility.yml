@@ -37,7 +37,7 @@ jobs:
       run: |
           codecov --token="$CODECOV_TOKEN"
 
-  backwards-compatibility:
+  forwards-compatibility:
 
     runs-on: ubuntu-latest
 
