@@ -2,8 +2,9 @@ import datetime
 import enum
 import typing
 
-import pydantic
 import graphene
+import pydantic
+
 import pydantic2graphene
 
 

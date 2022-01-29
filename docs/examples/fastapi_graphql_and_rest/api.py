@@ -2,11 +2,11 @@ import typing
 import uuid
 
 import fastapi
-import pydantic
 import graphene
-import pydantic2graphene
+import pydantic
 import starlette.graphql
 
+import pydantic2graphene
 
 app = fastapi.FastAPI()
 

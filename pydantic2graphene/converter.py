@@ -1,8 +1,9 @@
-import typing
+import inspect
 import logging
+import typing
+
 import graphene
 import pydantic
-import inspect
 
 try:
     # py36 compatibility
@@ -10,9 +11,7 @@ try:
 except ModuleNotFoundError:
     dataclasses = None
 
-from . import errors
-from . import fields
-from . import types
+from . import errors, fields, types
 
 _module_cache = {}
 _IS_GRAPHENE_V3_OR_LATER = int(graphene.__version__[:1]) >= 3
