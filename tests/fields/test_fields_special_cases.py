@@ -101,3 +101,18 @@ class TestDataclassesNotAvailablePy36:
             }
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+
+@unittest.mock.patch(
+    "pydantic2graphene.converter._IS_GRAPHENE_V3_OR_LATER",
+    False,
+)
+class TestForcingGrapheneOldVersions:
+    def test_list_field_works(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(to_pydantic_class(str))
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
