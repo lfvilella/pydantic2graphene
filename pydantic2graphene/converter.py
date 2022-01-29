@@ -167,13 +167,10 @@ class ToGraphene:
         if not _IS_GRAPHENE_V3_OR_LATER:
             return default_value
 
-        if not isinstance(default_value, (list, set)):
-            return default_value
+        if dataclasses and isinstance(default_value, (list, set)):
+            return dataclasses.field(default_factory=type(default_value))
 
-        if not dataclasses:
-            return default_value
-
-        return dataclasses.field(default_factory=type(default_value))
+        return default_value
 
     def _get_graphene_field(self, pydantic_field: pydantic.fields.ModelField):
         args = {
