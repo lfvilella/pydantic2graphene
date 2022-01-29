@@ -9,7 +9,6 @@ import pathlib
 import pytest
 import pydantic
 import pydantic2graphene
-import graphene
 
 
 def to_pydantic_class(field_type):
@@ -494,11 +493,11 @@ class TestTypeMappingPydantic2Graphene:
             }
 
             """
-            Allows use of a JSON String for input / output from the GraphQL 
+            Allows use of a JSON String for input / output from the GraphQL
             schema.
 
-            Use of this type is *not recommended* as you lose the benefits of 
-            having a defined, static schema 
+            Use of this type is *not recommended* as you lose the benefits of
+            having a defined, static schema
             (one of the key benefits of GraphQL).
             """
 
