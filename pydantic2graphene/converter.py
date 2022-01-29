@@ -167,7 +167,9 @@ class ToGraphene:
         if not _IS_GRAPHENE_V3_OR_LATER:
             return default_value
 
-        if dataclasses and isinstance(default_value, (list, set)):
+        if isinstance(default_value, (list, set)):
+            if not dataclasses:
+                return None
             return dataclasses.field(default_factory=type(default_value))
 
         return default_value
