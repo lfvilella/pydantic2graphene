@@ -15,6 +15,7 @@ from . import fields
 from . import types
 
 _module_cache = {}
+_IS_GRAPHENE_V3_OR_LATER = int(graphene.__version__[:1]) >= 3
 
 
 def _get_pydantic_class_name(pydantic_model: pydantic.BaseModel) -> str:
@@ -162,6 +163,10 @@ class ToGraphene:
         pydantic_field: pydantic.fields.ModelField,
     ):
         default_value = pydantic_field.default
+
+        if not _IS_GRAPHENE_V3_OR_LATER:
+            return default_value
+
         if not isinstance(default_value, (list, set)):
             return default_value
 

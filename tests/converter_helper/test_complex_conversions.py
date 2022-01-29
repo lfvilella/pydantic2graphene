@@ -85,6 +85,7 @@ class TestConvertingComplexModels:
         self,
         normalize_sdl,
         is_graphene_1_or_2,
+        get_sdl,
     ):
         value = pydantic2graphene.to_graphene(Human, graphene.InputObjectType)
         expected_value = '''
