@@ -1,5 +1,5 @@
-import pytest
 import graphene
+import pytest
 
 
 @pytest.fixture

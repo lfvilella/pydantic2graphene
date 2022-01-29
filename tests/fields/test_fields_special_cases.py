@@ -1,9 +1,10 @@
 import datetime
-import unittest.mock
 import typing
+import unittest.mock
 
-import pytest
 import pydantic
+import pytest
+
 import pydantic2graphene
 
 
@@ -71,6 +72,7 @@ class TestPydanticEmailFieldNotAvailable:
 class TestPydanticIterableShapeNotAvailable:
     def test_do_not_raise_attribute_error(self, module_wrapper):
         import pydantic.fields
+
         import pydantic2graphene.fields
 
         fake_module = module_wrapper(

@@ -1,5 +1,6 @@
-import pydantic
 import graphene
+import pydantic
+
 import pydantic2graphene
 
 

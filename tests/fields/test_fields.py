@@ -1,13 +1,14 @@
-import typing
-import ipaddress
-import enum
-import decimal
-import uuid
 import datetime
+import decimal
+import enum
+import ipaddress
 import pathlib
+import typing
+import uuid
 
-import pytest
 import pydantic
+import pytest
+
 import pydantic2graphene
 
 

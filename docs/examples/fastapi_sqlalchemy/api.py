@@ -1,18 +1,18 @@
 import abc
+import contextlib
 import os
 import typing
 import uuid
-import contextlib
 
 import fastapi
 import graphene
 import pydantic
 import pydantic_sqlalchemy
-import pydantic2graphene
 import sqlalchemy
 import sqlalchemy.ext.declarative
 import starlette.graphql
 
+import pydantic2graphene
 
 ###############################
 #      SQLAlchemy Conf        #

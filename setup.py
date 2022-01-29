@@ -1,7 +1,7 @@
 import pathlib
-import setuptools
 import re
 
+import setuptools
 
 description = (
     "Easy way to convert pydantic2graphene models to graphene objects."

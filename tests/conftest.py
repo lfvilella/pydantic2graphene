@@ -1,9 +1,10 @@
 import collections
-import typing
-import pytest
-import pydantic
-import graphene
 import re
+import typing
+
+import graphene
+import pydantic
+import pytest
 
 
 def _get_type_sdl(obj):
