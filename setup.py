@@ -18,8 +18,8 @@ version_txt = (ROOT_DIR / "pydantic2graphene" / "version.py").read_text()
 version = re.search(r"v\d+(\.\d+)+", version_txt).group()
 
 requirements = [
-    "graphene>=1.1,<=2.1.9",
-    "pydantic>=1.0,<=1.8.2",
+    "graphene>=1.1,<=3.0.0",
+    "pydantic>=1.0,<=1.9.0",
 ]
 
 github_url = "https://github.com/lfvilella/pydantic2graphene"

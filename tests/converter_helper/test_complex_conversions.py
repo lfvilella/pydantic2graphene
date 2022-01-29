@@ -49,28 +49,59 @@ class TestConvertingComplexModels:
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
-    def test_returns_input_object_type_schema(self, normalize_sdl):
+    def test_returns_input_object_type_schema(
+        self,
+        normalize_sdl,
+        is_graphene_1_or_2,
+    ):
         value = pydantic2graphene.to_graphene(Human, graphene.InputObjectType)
-        expected_value = """
+        expected_value = '''
+            input HumanInputGql {
+              name: String!
+              birthDate: DateTime!
+              pets: [PetInputGql] = []
+            }
+
+            """
+            The `DateTime` scalar type represents a DateTime
+            value as specified by
+            [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+            """
             scalar DateTime
 
-            input HumanInputGql {
-                name: String!
-                birthDate: DateTime!
-                pets: [PetInputGql] = []
-            }
-
             input PetInputGql {
-                name: String!
-                specie: SpecieEnum!
+              name: String!
+              specie: SpecieEnum!
             }
 
+            """An enumeration."""
             enum SpecieEnum {
-                DOG
-                CAT
-                OTHER
+              DOG
+              CAT
+              OTHER
             }
-        """
+        '''
+        if is_graphene_1_or_2:
+            expected_value = """
+                scalar DateTime
+
+                input HumanInputGql {
+                    name: String!
+                    birthDate: DateTime!
+                    pets: [PetInputGql] = []
+                }
+
+                input PetInputGql {
+                    name: String!
+                    specie: SpecieEnum!
+                }
+
+                enum SpecieEnum {
+                    DOG
+                    CAT
+                    OTHER
+                }
+            """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_returns_interface_object_type_schema(self, normalize_sdl):

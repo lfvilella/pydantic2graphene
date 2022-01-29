@@ -1,6 +1,7 @@
 import collections
 import typing
 import pytest
+import pydantic
 import graphene
 import re
 
@@ -15,7 +16,7 @@ def _get_input_sdl(obj):
         foo = graphene.String(node=obj())
 
     sdl = str(graphene.Schema(query=Query))
-    return re.sub('type Query[^}]*}', '', sdl.split("}", 1)[1].strip())
+    return re.sub("type Query[^}]*}", "", sdl.split("}", 1)[1].strip())
 
 
 def _get_interface_sdl(obj):
@@ -24,7 +25,7 @@ def _get_interface_sdl(obj):
             interfaces = (obj,)
 
     sdl = str(graphene.Schema(query=Query))
-    return re.sub('type Query[^}]*}', '', sdl.split("}", 1)[1].strip())
+    return re.sub("type Query[^}]*}", "", sdl.split("}", 1)[1].strip())
 
 
 def obj_to_sdl(
@@ -95,3 +96,18 @@ def module_wrapper():
             return getattr(_local_state.module, attr)
 
     return ModuleWrapper
+
+
+@pytest.fixture
+def graphene_version() -> str:
+    return graphene.__version__
+
+
+@pytest.fixture
+def is_graphene_1_or_2(graphene_version) -> bool:
+    return graphene_version in ["1.", "2."]
+
+
+@pytest.fixture
+def pydantic_version() -> str:
+    return str(pydantic.VERSION)

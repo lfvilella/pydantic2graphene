@@ -18,7 +18,8 @@ class TestToGraphene:
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_when_graphene_type_is_not_set_use_object_type_as_default(
-        self, normalize_sdl,
+        self,
+        normalize_sdl,
     ):
         value = pydantic2graphene.to_graphene(Human)
         expected_value = """

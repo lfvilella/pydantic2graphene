@@ -19,12 +19,26 @@ def test_schema_type_declaration(normalize_sdl):
     assert normalize_sdl(value) == normalize_sdl(expected_value)
 
 
-def test_schema_input_declaration(normalize_sdl):
+def test_schema_input_declaration_high_precision(normalize_sdl):
+    if graphene.__version__[:2] not in ["1.", "2."]:
+        return
     value = pydantic2graphene.to_graphene(MyModel, graphene.InputObjectType)
     expected_value = """
         input MyModelInputGql {
             field1: Float!
             field2: Float=3.14159265359
+        }
+    """
+    assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+
+def test_schema_input_declaration(normalize_sdl):
+    version_1_x = graphene.__version__.startswith("1.")
+    value = pydantic2graphene.to_graphene(MyModel, graphene.InputObjectType)
+    expected_value = """
+        input MyModelInputGql {
+            field1: Float!
+            field2: Float=3.14159
         }
     """
     assert normalize_sdl(value) == normalize_sdl(expected_value)
