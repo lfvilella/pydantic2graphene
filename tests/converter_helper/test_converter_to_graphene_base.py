@@ -23,7 +23,8 @@ class TestConverterToGrapheneBase:
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_when_graphene_type_is_not_set_use_object_type_as_default(
-        self, normalize_sdl,
+        self,
+        normalize_sdl,
     ):
         value = HumanConverter.as_class()
         expected_value = """
@@ -34,7 +35,8 @@ class TestConverterToGrapheneBase:
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_include_extra_fields_to_the_schema(
-        self, normalize_sdl,
+        self,
+        normalize_sdl,
     ):
         class HumanConverterExtra(pydantic2graphene.ConverterToGrapheneBase):
             class Config:

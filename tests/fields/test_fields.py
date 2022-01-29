@@ -9,7 +9,6 @@ import pathlib
 import pytest
 import pydantic
 import pydantic2graphene
-import graphene
 
 
 def to_pydantic_class(field_type):
@@ -49,46 +48,95 @@ class TestTypeMappingPydantic2Graphene:
         with pytest.raises(pydantic2graphene.FieldNotSupported):
             pydantic2graphene.to_graphene(to_pydantic_class(frozenset))
 
-    def test_datetime_date_field(self, normalize_sdl):
-        version_1_x = graphene.__version__.startswith("1.")
-        version_2_0 = graphene.__version__ == "2.0"
+    def test_datetime_date_field(
+        self,
+        normalize_sdl,
+        graphene_version,
+        is_graphene_1_or_2,
+    ):
+        version_1_x = graphene_version.startswith("1.")
+        version_2_0 = graphene_version == "2.0"
         if version_1_x or version_2_0:
             with pytest.raises(pydantic2graphene.FieldNotSupported):
                 pydantic2graphene.to_graphene(to_pydantic_class(datetime.date))
             return
 
         value = pydantic2graphene.to_graphene(to_pydantic_class(datetime.date))
-        expected_value = """
-            scalarDatetypeFakeGql {
-                field: Date!
+        expected_value = '''
+            type FakeGql {
+              field: Date!
             }
-        """
+
+            """
+            The `Date` scalar type represents a Date
+            value as specified by
+            [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+            """
+            scalar Date
+        '''
+        if is_graphene_1_or_2:
+            expected_value = """
+                scalarDatetypeFakeGql {
+                    field: Date!
+                }
+            """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
-    def test_datetime_datetime_field(self, normalize_sdl):
+    def test_datetime_datetime_field(self, normalize_sdl, is_graphene_1_or_2):
         value = pydantic2graphene.to_graphene(
             to_pydantic_class(datetime.datetime)
         )
-        expected_value = """
-            scalarDateTimetypeFakeGql {
-                field: DateTime!
+        expected_value = '''
+            type FakeGql {
+              field: DateTime!
             }
-        """
+
+            """
+            The `DateTime` scalar type represents a DateTime
+            value as specified by
+            [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+            """
+            scalar DateTime
+        '''
+        if is_graphene_1_or_2:
+            expected_value = """
+                scalarDateTimetypeFakeGql {
+                    field: DateTime!
+                }
+            """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
-    def test_datetime_time_field(self, normalize_sdl):
+    def test_datetime_time_field(
+        self,
+        normalize_sdl,
+        graphene_version,
+        is_graphene_1_or_2,
+    ):
         versions_1_x = {"1.1.2", "1.1.1", "1.1", "1.0.2", "1.0.1", "1.0"}
-        if graphene.__version__ in versions_1_x:
+        if graphene_version in versions_1_x:
             with pytest.raises(pydantic2graphene.FieldNotSupported):
                 pydantic2graphene.to_graphene(to_pydantic_class(datetime.time))
             return
 
         value = pydantic2graphene.to_graphene(to_pydantic_class(datetime.time))
-        expected_value = """
+        expected_value = '''
             type FakeGql {
-                field: Time!
-            }scalarTime
-        """
+              field: Time!
+            }
+
+            """
+            The `Time` scalar type represents a Time value as specified by
+            [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+            """
+
+            scalar Time
+        '''
+        if is_graphene_1_or_2:
+            expected_value = """
+                type FakeGql {
+                    field: Time!
+                }scalarTime
+            """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_datetime_timedelta_field(self):
@@ -296,40 +344,65 @@ class TestTypeMappingPydantic2Graphene:
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
-    def test_enum_field(self, normalize_sdl):
+    def test_enum_field(self, normalize_sdl, is_graphene_1_or_2):
         class EnumTest(enum.Enum):
             ONE = 1
             TWO = 2
 
         value = pydantic2graphene.to_graphene(to_pydantic_class(EnumTest))
-        expected_value = """
-            enum EnumTest {
-                ONE
-                TWO
+        expected_value = '''
+            type FakeGql {
+              field: EnumTest!
             }
 
-            type FakeGql {
-                field: EnumTest!
+            """An enumeration."""
+            enum EnumTest {
+              ONE
+              TWO
             }
-        """
+        '''
+        if is_graphene_1_or_2:
+            expected_value = """
+                enum EnumTest {
+                    ONE
+                    TWO
+                }
+
+                type FakeGql {
+                    field: EnumTest!
+                }
+            """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
-    def test_int_enum_field(self, normalize_sdl):
+    def test_int_enum_field(self, normalize_sdl, is_graphene_1_or_2):
         class Enumer(enum.IntEnum):
             ONE = 1
             TWO = 2
 
         value = pydantic2graphene.to_graphene(to_pydantic_class(Enumer))
-        expected_value = """
-            enum Enumer {
-                ONE
-                TWO
+        expected_value = '''
+            type FakeGql {
+              field: Enumer!
             }
 
-            type FakeGql {
-                field: Enumer!
+            """An enumeration."""
+            enum Enumer {
+              ONE
+              TWO
             }
-        """
+        '''
+        if is_graphene_1_or_2:
+            expected_value = """
+                enum Enumer {
+                    ONE
+                    TWO
+                }
+
+                type FakeGql {
+                    field: Enumer!
+                }
+            """
+
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_decimal_field(self, normalize_sdl):
@@ -381,8 +454,14 @@ class TestTypeMappingPydantic2Graphene:
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
-    def test_pydantic_json_field(self, normalize_sdl):
-        graphene_not_suported = graphene.__version__ in {
+    def test_pydantic_json_field(
+        self,
+        normalize_sdl,
+        graphene_version,
+        is_graphene_1_or_2,
+        pydantic_version,
+    ):
+        graphene_not_suported = graphene_version in {
             "1.4.2",
             "1.4.1",
             "1.4",
@@ -396,7 +475,7 @@ class TestTypeMappingPydantic2Graphene:
             "1.0.1",
             "1.0",
         }
-        pydantic_not_supported = str(pydantic.VERSION)[:3] in {
+        pydantic_not_supported = pydantic_version[:3] in {
             "1.2",
             "1.1",
             "1.0",
@@ -407,13 +486,32 @@ class TestTypeMappingPydantic2Graphene:
             return
 
         value = pydantic2graphene.to_graphene(to_pydantic_class(pydantic.Json))
-        expected_value = """
+
+        expected_value = '''
             type FakeGql {
-                field: JSONString
+              field: JSONString
             }
 
+            """
+            Allows use of a JSON String for input / output from the GraphQL
+            schema.
+
+            Use of this type is *not recommended* as you lose the benefits of
+            having a defined, static schema
+            (one of the key benefits of GraphQL).
+            """
+
             scalar JSONString
-        """
+        '''
+        if is_graphene_1_or_2:
+            expected_value = """
+                type FakeGql {
+                    field: JSONString
+                }
+
+                scalar JSONString
+            """
+
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
     def test_pydantic_payment_card_number_field(self, normalize_sdl):
@@ -761,24 +859,31 @@ class TestTypeMappingPydantic2Graphene:
         """
         assert normalize_sdl(value) == normalize_sdl(expected_value)
 
-    @pytest.mark.parametrize('base_type, graphene_type_name', (
-        (str, 'String'),
-        (int, 'Int'),
-        (float, 'Float'),
-        (decimal.Decimal, 'Float'),
-        (bytes, 'String'),
-    ))
-    def test_subclass_of_supported_fields(self, normalize_sdl, base_type,
-                                          graphene_type_name):
+    @pytest.mark.parametrize(
+        "base_type, graphene_type_name",
+        (
+            (str, "String"),
+            (int, "Int"),
+            (float, "Float"),
+            (decimal.Decimal, "Float"),
+            (bytes, "String"),
+        ),
+    )
+    def test_subclass_of_supported_fields(
+        self, normalize_sdl, base_type, graphene_type_name
+    ):
         class MyCustomSubclass(base_type):
             pass
 
         value = pydantic2graphene.to_graphene(
             to_pydantic_class(MyCustomSubclass)
         )
-        expected_value = """
+        expected_value = (
+            """
             type FakeGql {
                 field: %s!
             }
-        """ % graphene_type_name
+        """
+            % graphene_type_name
+        )
         assert normalize_sdl(value) == normalize_sdl(expected_value)

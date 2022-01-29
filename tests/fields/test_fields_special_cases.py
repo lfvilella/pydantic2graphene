@@ -1,5 +1,6 @@
 import datetime
 import unittest.mock
+import typing
 
 import pytest
 import pydantic
@@ -85,3 +86,33 @@ class TestPydanticIterableShapeNotAvailable:
             ]
             == 1
         )
+
+
+@unittest.mock.patch("pydantic2graphene.converter.dataclasses", None)
+class TestDataclassesNotAvailablePy36:
+    def test_list_field_works(self, normalize_sdl):
+        class Fake(pydantic.BaseModel):
+            field: typing.List[str] = []
+
+        value = pydantic2graphene.to_graphene(Fake)
+        expected_value = """
+            type FakeGql {
+                field: [String]
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
+
+
+@unittest.mock.patch(
+    "pydantic2graphene.converter._IS_GRAPHENE_V3_OR_LATER",
+    False,
+)
+class TestForcingGrapheneOldVersions:
+    def test_list_field_works(self, normalize_sdl):
+        value = pydantic2graphene.to_graphene(to_pydantic_class(str))
+        expected_value = """
+            type FakeGql {
+                field: String!
+            }
+        """
+        assert normalize_sdl(value) == normalize_sdl(expected_value)
