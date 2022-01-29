@@ -4,6 +4,12 @@ import graphene
 import pydantic
 import inspect
 
+try:
+    # py36 compatibility
+    import dataclasses
+except ModuleNotFoundError:
+    dataclasses = None
+
 from . import errors
 from . import fields
 from . import types
@@ -151,10 +157,23 @@ class ToGraphene:
             if field_outer:
                 return field_outer
 
+    def _get_graphene_default_value(
+        self,
+        pydantic_field: pydantic.fields.ModelField,
+    ):
+        default_value = pydantic_field.default
+        if not isinstance(default_value, (list, set)):
+            return default_value
+
+        if not dataclasses:
+            return default_value
+
+        return dataclasses.field(default_factory=type(default_value))
+
     def _get_graphene_field(self, pydantic_field: pydantic.fields.ModelField):
         args = {
             "required": pydantic_field.required,
-            "default_value": pydantic_field.default,
+            "default_value": self._get_graphene_default_value(pydantic_field),
         }
         field = self._convert_to_graphene_field(pydantic_field)
         if not field:
