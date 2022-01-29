@@ -105,7 +105,7 @@ def graphene_version() -> str:
 
 @pytest.fixture
 def is_graphene_1_or_2(graphene_version) -> bool:
-    return graphene_version in ["1.", "2."]
+    return graphene_version[:2] in ["1.", "2."]
 
 
 @pytest.fixture

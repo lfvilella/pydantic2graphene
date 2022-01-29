@@ -503,7 +503,6 @@ class TestTypeMappingPydantic2Graphene:
 
             scalar JSONString
         '''
-
         if is_graphene_1_or_2:
             expected_value = """
                 type FakeGql {
