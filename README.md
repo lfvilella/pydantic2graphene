@@ -9,6 +9,9 @@
 
 Easy way to convert pydantic2graphene models to graphene objects.
 
+## Install
+
+    $ pip install pydantic2graphene
 
 ## A Simple Example
 
