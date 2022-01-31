@@ -58,6 +58,6 @@ setuptools.setup(
     license="MIT",
     packages=["pydantic2graphene"],
     package_data={"pydantic2graphene": ["py.typed"]},
-    python_requires=">=3.6,<=3.10",
+    python_requires=">=3.6,<3.11",
     install_requires=requirements,
 )
